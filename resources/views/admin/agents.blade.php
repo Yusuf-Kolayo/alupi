@@ -614,7 +614,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '{{ url("/admin/agent") }}',
+                url: '{{ url("/admin_agent/agent") }}',
                 data: new FormData(this),
                 dataType: 'json',
                 contentType: false,

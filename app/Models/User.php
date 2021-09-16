@@ -44,12 +44,26 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function staff() {
+        return $this->hasOne('App\Models\Staffs', 'staff_id', 'user_id');
+    }  
+
+
     public function agent() {
         return $this->hasOne('App\Models\Agent', 'agent_id', 'user_id');
-    } 
- 
+    }  
+
+
+    public function client() {
+        return $this->hasOne('App\Models\Client', 'client_id', 'user_id');
+    }  
+
 
     public function notification () {
         return $this->hasMany('App\Models\Notification', 'receiver_id', 'user_id');
     } 
+
+    // public function message () {
+    //     return $this->hasMany('App\Models\Notification', 'receiver_id', 'user_id');
+    // } 
 }

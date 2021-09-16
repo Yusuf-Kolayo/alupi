@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateCatchmentsTable extends Migration
 {
@@ -16,8 +16,10 @@ class CreateCatchmentsTable extends Migration
         Schema::create('catchments', function (Blueprint $table) {
             $table->id();
             $table->string('catchment_id', 22);
-            $table->integer('group_id');
             $table->string('locations', 100);
+            $table->string('lga', 55);
+            $table->string('state_name', 55);
+            $table->integer('state_index');
             $table->string('description', 100);
             $table->timestamps();
         });

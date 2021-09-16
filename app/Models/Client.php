@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Catchment;
 use App\Models\Agent;
 
-class client extends Model
+class Client extends Model
 {
     use HasFactory;
 

@@ -29,13 +29,13 @@
                   </div>
   
                   <h3 class="profile-username text-center"> {{ ucfirst($client->user->username) }} </h3> 
-                  <p class="text-muted text-center" style="font-size: 14px;"> 
+                  <p class="text-muted text-center mb-2" style="font-size: 14px;"> 
                     Client ID:  {{ $client->client_id }} <br>
                     Product Sessions: {{count($product_purchase_sessions)}} <br>
                     Transactions: {{count($transactions)}} <br> 
                     Agent: {{$client->agent->user->username}} <br> 
                   </p>
-               
+                  <p class="mb-0"><a href="{{route('chat_board', ['user_id'=>$client->client_id])}}" class="btn btn-outline-primary btn-block"> <i class="fa fa-comments"></i> chat </a></p>
                 </div>
                 <!-- /.card-body -->
               </div>

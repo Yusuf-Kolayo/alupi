@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'ALUPI ITNL'),
+    'name' => env('APP_NAME', 'DAP_SOFTWARE'),
 
     /*
     |--------------------------------------------------------------------------

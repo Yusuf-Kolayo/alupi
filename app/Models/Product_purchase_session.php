@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\user; 
 
-class product_purchase_session extends Model
+class Product_purchase_session extends Model
 {
     use HasFactory;
 

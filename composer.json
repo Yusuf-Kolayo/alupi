@@ -16,6 +16,7 @@
         "laravelcollective/html": "^6.2"
     },
     "require-dev": {
+        "bennett-treptow/laravel-migration-generator": "^3.2",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",

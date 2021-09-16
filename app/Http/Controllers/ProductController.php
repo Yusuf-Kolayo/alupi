@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\DB; 
@@ -13,13 +12,23 @@ use App\Models\Category;
 use App\Models\Brand;
 
 
-class ProductController extends Controller
+class ProductController extends BaseController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+       
+
+      public function __construct() {
+        $this->middleware('auth');
+        parent::__construct();
+      }
+
+
+
     public function index()
     { 
         $products = Product::all();

@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB; 
@@ -17,12 +16,14 @@ use App\Mail\Referee_email_val;
 use Illuminate\Support\Facades\Session;
  
 
-class AgentController extends Controller 
+class AgentController extends BaseController 
 {
 
     public function __construct()
     {
-        $this->middleware('auth', ['except'=> ['show_referring_form','send_referee_mail','check_referee_code']]);
+        $this->middleware('auth');
+        parent::__construct();
+        // $this->middleware('auth', ['except'=> ['show_referring_form','send_referee_mail','check_referee_code']]);
     }
 
     /**
@@ -204,8 +205,7 @@ class AgentController extends Controller
  
                 'hr_staff_id' =>  $request['hr_staff_id'],
                 'hr_grt_response' =>  $request['hr_grt_response'],
-                'hr_remark' =>  $request['hr_remark'], 
-
+                'hr_remark' =>  $request['hr_remark'],  
                 'actor_id' => auth()->user()->id
             ]); 
 

@@ -6,14 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User; 
 
-class Transaction extends Model
+class Staffs extends Model
 {
     use HasFactory;
-
     protected $guarded = [];
 
-    public function product_purchase_session () {
-        return $this->hasOne ('App\Models\Product_purchase_session', 'pps_id', 'pps_id');
-    } 
+    public function user() {
+        return $this->hasOne(User::class, 'user_id', 'staff_id');
+    }
  
 }

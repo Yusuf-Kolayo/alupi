@@ -43,6 +43,7 @@
                       Transactions: {{count($user->agent->transaction)}} <br>
                       Product Sessions: {{count($user->agent->product_purchase_session)}} <br>
                   </p>
+                  <p class="mb-0"><a href="{{route('chat_board', ['user_id'=>$user->user_id])}}" class="btn btn-outline-primary btn-block"> <i class="fa fa-comments"></i> chat </a></p>
                 </div>
                 <!-- /.card-body -->
               </div>

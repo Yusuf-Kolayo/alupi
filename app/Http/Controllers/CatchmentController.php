@@ -1,20 +1,28 @@
 <?php
  
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; 
 use App\Models\Catchment;
 use App\Models\Group;
 
-class CatchmentController extends Controller
+class CatchmentController extends BaseController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+ 
+    
+     public function __construct() {
+        $this->middleware('auth');
+        parent::__construct();
+    }
+
+
+
     public function index()
     { 
         $catchments = Catchment::all();           $state_datas = array();

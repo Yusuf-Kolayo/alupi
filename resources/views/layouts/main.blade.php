@@ -47,7 +47,7 @@
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 
   <style> 
-      label { font-weight: 400!important; }
+      label { font-weight: 400!important; } .img-size-50 { width: 38px; }
       .table td, .table th { padding: .25rem; font-size: 14px;}
       #example1_filter { text-align: right;  font-size: 13px; }
       #example1_filter input {  height: calc(1.5125rem + 2px); } 
@@ -151,6 +151,38 @@
 
   <!-- /.content-wrapper -->
   @include('components.footer')
+
+
+   @if (auth()->user())
+          <script>
+     var patner_id = $('#patner_id').val(); 
+ 
+ function fetch_chat () { 
+         // after page loading or refresh
+         if ($('#msg_body').length > 0) { var data2send={"patner_id":patner_id};  }
+                                   else { var data2send={"patner_id":""};   }
+         $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+         $.ajax({
+             url:"{{route('fetch_chat')}}",
+             dataType:"text",
+             method:"GET",
+             data:data2send,
+             success:function(resp) { 
+               if ($('#msg_body').length > 0) {  
+                 $('#msg_body').html(JSON.parse(resp).chatboard_msg.replace(/\\/g, ""));    // console.warn(JSON.parse(resp).active_time);
+                 $('#active_time').html(JSON.parse(resp).active_time.replace(/\\/g, ""));    
+               }
+                 $('#topnav_msg').html(JSON.parse(resp).topnav_msg.replace(/\\/g, ""));
+                 var element = document.getElementById("msg_body");
+                 element.scrollTop = element.scrollHeight;  
+             }
+         });
+    }  
+ var intervalId = window.setInterval(function() {
+  fetch_chat(); // fetch new chat data at 5 seconds interval
+ }, 5000);
+          </script>
+   @endif
 
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">

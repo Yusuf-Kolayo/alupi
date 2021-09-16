@@ -1,20 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; 
 use App\Models\Brand;
 
 
-class BrandController extends Controller
+class BrandController extends BaseController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+   public function __construct() {
+       $this->middleware('auth');
+       parent::__construct();
+   }
+
+
+
     public function index()
     { 
         $brands = Brand::all();
