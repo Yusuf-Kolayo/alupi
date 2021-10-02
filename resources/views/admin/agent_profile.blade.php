@@ -1,8 +1,8 @@
 @extends('layouts.main')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/dist/css/reset.css') }}">
-<link rel="stylesheet" href="{{ asset('css/dist/css/responsive.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/css/reset.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/css/responsive.css') }}">
 <style>
     input.inp_decl { display: inline-block!important;  height: 21px;  width: 250px; font-size: 13px; }
     p.undertaken {  text-align: center;  font-weight: 600;   border-bottom: 1px solid; margin-bottom: 22px; }
@@ -210,7 +210,7 @@
 
 
                       <div class="tab-pane table-responsive" id="transactions"> 
-                        <table id="t1" class="table table-bordered table-striped" style="width:800px;">
+                        <table id="t1" class="table table-bordered" style="width:800px;">
                           <thead>
                           <tr>
   
@@ -218,7 +218,7 @@
                             <th>Product ID</th>
                             <th>Session ID</th>
                             <th>Amount</th>    <th>Balance</th>
-                            <th>Type</th>
+                            <th>Type</th>      <th>Status</th>
                             <th>Date</th> 
                             <th></th>  <th></th>  
                           </tr>
@@ -229,19 +229,21 @@
                             @if (count($product_purchase_session->transaction)>0) 
                             @php $last_trans_id = $product_purchase_session->transaction->last()->trans_id @endphp
                               <tr> 
-                                <td colspan="7">Transactions on session: <b>{{$product_purchase_session->pps_id}} </b> </td>
+                                <td colspan="8">Transactions on session: <b>{{$product_purchase_session->pps_id}} </b> </td>
                                 <td colspan="3"> <a href="#" onclick="select_trans_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs btn-block">Session Details</a> </td> 
                               </tr> 
-                              @foreach($product_purchase_session->transaction->sortKeysDesc() as $transaction)
-                                  @php $allow_edit = false;
+                              @foreach($product_purchase_session->transaction->sortKeysDesc() as $transaction) 
+                                  @php $allow_edit = false;  $tr_bg_class = '';
                                   if ($transaction->trans_id==$last_trans_id) { $allow_edit= true; }      // set some initial values and conditions
+                                  if ($transaction->status=='pending') { $tr_bg_class = 'fade_bd_red'; }
+                                  if ($transaction->status=='approved') { $tr_bg_class = 'fade_bd_blue'; }     
                                   @endphp
-                              <tr>
+                              <tr class="{{$tr_bg_class}}">
                                   <td> {{$transaction->trans_id}}   </td>
                                   <td> {{$transaction->product_id}} </td>
                                   <td> {{$transaction->pps_id}} </td>
                                   <td> {{$transaction->amount}} </td>   <td> {{$transaction->new_bal}} </td>
-                                  <td> {{$transaction->type}}   </td>     
+                                  <td> {{$transaction->type}}   </td>   <td> {{$transaction->status}}  </td>     
                                   <td> {{$transaction->created_at}} </td>   
                                   <td> 
                                       @if ($allow_edit===true) 
@@ -332,11 +334,22 @@
                   @admin
                     <div class="tab-pane" id="settings">
                          <div class="row">
-                             <div class="col-6">  <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#update_data">
-                             <span class="fas fa-edit"></span>  Update Data  </button> </div>
-                         <div class="col-6">  <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#delete_data">
-                            <span class="fas fa-trash"></span> Trash Account  </button> </div>
-                         </div>
+
+                        <div class="col-6">  <button type="button" class="btn btn-success btn-block m-1" data-toggle="modal" data-target="#update_data">
+                          <span class="fas fa-edit"></span>  Update Data  </button> 
+                        </div> 
+
+                @if ($user->agent->acct_status=='pending')
+                <div class="col-6">  <button type="button" class="btn btn-primary btn-block m-1" data-toggle="modal" data-target="#assign_catchment">
+                  <span class="fas fa-th"></span> Assign Catchment </button>  
+                </div> 
+                @endif    
+
+
+                        <div class="col-6">  <button type="button" class="btn btn-danger btn-block m-1" data-toggle="modal" data-target="#delete_data">
+                          <span class="fas fa-trash"></span> Delete Account  </button> 
+                        </div>
+
                     </div>      <!-- /.tab-pane -->
                   @endadmin
 
@@ -557,10 +570,11 @@
 
 
      
- document.getElementById("copy_button").addEventListener("click", function() {
+document.getElementById("copy_button").addEventListener("click", function() {
     copyToClipboard(document.getElementById("copy_target"));
     alert('Link copied! Now go and paste where you want')
 });
+
 
 function copyToClipboard(elem) {
 	  // create hidden text element, if it doesn't already exist
@@ -632,8 +646,8 @@ function copyToClipboard(elem) {
 
 
 
-     {{-- UPDATE FORM --}}
-    <div class="modal fade" id="update_data">
+      {{-- UPDATE FORM --}}
+       <div class="modal fade" id="update_data">
         <div class="modal-dialog modal-lg">
           <div class="modal-content" style="max-width: 700px;">
 
@@ -1134,13 +1148,55 @@ function copyToClipboard(elem) {
 
 
 
+      
+      
 
 
 
 
 
+@if ($user->agent->acct_status=='pending')
+@php  $catchments = \App\Models\Catchment::all();   @endphp
 
+      <div class="modal fade" id="assign_catchment">
+        <div class="modal-dialog ">
+          <div class="modal-content">
+            {!! Form::open(['route' => ['agent.assign_catchment'], 'files' => false, 'method'=>'POST']) !!}
+            <div class="modal-header bg-primary">  <input type="hidden" name="_method" value="POST">  <input type="hidden" name="agent_id" value="{{$user->user_id}}">
+              <h6 class="modal-title text-white"> <span class="fs-2"> <span class="fas fa-th"></span> Catchment Assignment</span> </h6>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div> 
+                   
+            <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                          <label for="catchment_id"> {{__('Select Catchment')}}  </label>
+                          <select name="catchment_id" id="catchment_id" required="" class="form-control ng-touched ng-dirty ng-valid">
+                              <option value=""></option>
+                              @foreach ($catchments as $catchment)
+                                  <option value="{{$catchment->catchment_id}}">{{$catchment->catchment_id}} : {{$catchment->locations}}</option>
+                              @endforeach
+                          </select>
+                      </div>
+                    </div> 
+                  </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            {!! Form::close() !!}
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
 
+@endif
 
 
 
@@ -1260,9 +1316,9 @@ function copyToClipboard(elem) {
 
 <!-- jquery.steps js -->
 {{-- <script src='https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.js'></script> --}}
-<script src="{{ asset('css/dist/js/jquery.validate.js') }}"></script>
-<script src="{{ asset('css/dist/js/jquery.steps.js') }}"></script>
-<script src="{{ asset('css/dist/js/particles.js') }}"></script>
+<script src="{{ asset('dist/js/jquery.validate.js') }}"></script>
+<script src="{{ asset('dist/js/jquery.steps.js') }}"></script>
+<script src="{{ asset('dist/js/particles.js') }}"></script>
 
 
 <script>

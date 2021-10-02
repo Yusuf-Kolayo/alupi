@@ -19,7 +19,6 @@ use App\Models\Notification;
 class TransactionController extends BaseController
 {
 
-
     
       public function __construct() {
         $this->middleware('auth');
@@ -300,7 +299,8 @@ class TransactionController extends BaseController
             'agent_id' =>  $agent_id,
             'amount' => $amount,
             'new_bal' => $new_balance,
-            'type' => $type
+            'type' => $type,
+            'status' => $status
         ]);
 
         // save user activity
@@ -379,7 +379,7 @@ class TransactionController extends BaseController
     {
        $transaction = Transaction::where('trans_id', $trans_id)->firstOrFail();
        $client_id = $transaction->client_id;
-
+         
        if ($transaction) {
            $deleted_rows = Transaction::where('trans_id', $trans_id)->delete();
 

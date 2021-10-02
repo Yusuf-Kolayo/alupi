@@ -4,13 +4,13 @@
 <style>
  .direct-chat-messages, .direct-chat-contacts { height:350px; }
  .cust {
- font-size: 13px; background-color: #e2e2e2; padding: 5px;
+ font-size: 14px; background-color: #e2e2e2; padding: 7px;
  color: #000; width: 85%; float: left; border-radius: 5px;
  }
  .tmcus{ font-size: .8em; float: right!important; }
  .comp {
- font-size: 13px; background-color: #bedaff;
- color: #000; padding: 5px; width: 85%;
+ font-size: 14px; background-color: #bedaff;
+ color: #000; padding: 7px; width: 85%;
  float: right; border-radius: 5px;
  }
  .con {
@@ -84,7 +84,7 @@
 
 
                         @if ($user[1])
-                        <p class="text-sm short_msg">{{$user[1]->message}}</p>
+                        <p class="text-sm short_msg">{{substr($user[1]->message,0,75)}} ...</p>
                         <p class="text-sm text-muted mb-0"><i class="far fa-clock mr-1"></i>{{$user[1]->created_at}}</p>
                         @else
                         <p class="text-sm short_msg">---</p>
@@ -143,14 +143,14 @@
                 <!-- End Contact Item -->
                 <li>
                     <a href="{{route('chat_board', ['user_id'=>$user[0]->user_id])}}">
-                        <img class="contacts-list-img" src="{{asset('css/dist/img/user7-128x128.jpg') }}" alt="User Avatar">
+                        <img class="contacts-list-img" src="{{asset('dist/img/user7-128x128.jpg') }}" alt="User Avatar">
 
                         <div class="contacts-list-info">
                         <span class="contacts-list-name">
                            {{$user[0]->username}}
 
                            @if ($user[1])
-                           <small class="contacts-list-date float-right">{{$user[1]->message}}</small>
+                           <small class="contacts-list-date float-right">{{substr($user[1]->message,0,75)}} ...</small>
                            @else
                            <small class="contacts-list-date float-right">---</small>
                            @endif

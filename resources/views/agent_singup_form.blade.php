@@ -20,27 +20,27 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
       <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
   <!-- iCheck -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}"> 
+  <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}"> 
   <!-- Theme style -->
-  <link rel="stylesheet" href="{{ asset('css/dist/css/adminlte.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
   <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/dist/css/style.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('dist/css/style.css') }}">
 
-  <link rel="stylesheet" href="{{ asset('css/dist/css/reset.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/dist/css/responsive.css') }}">
+  <link rel="stylesheet" href="{{ asset('dist/css/reset.css') }}">
+  <link rel="stylesheet" href="{{ asset('dist/css/responsive.css') }}">
   <style>  .wizard>.steps>ul>li { width: 50%; }  </style>
   
     <!-- jQuery -->
-<script src="{{ asset('css/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->
-<script src="{{ asset('css/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+<script src="{{ asset('plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 </head>
 <body>  <br> <br> <br> 
@@ -61,9 +61,8 @@
                 <div class="card-header text-center">
                     <a href="#" class="h1"> {{ config('app.name', "ALUPI ITNL") }} </a>
                 </div>
-                <div class="card-body"> 
-            
-            
+                <div class="card-body" id="reg_div"> 
+                    <div class="mb-2" style="display:none;" id="error_msg"></div> 
             
                     <p class="login-box-msg"> Fill in the form below with the accurate information.</b></p>
             
@@ -275,16 +274,17 @@
                                        <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="agt_referrer_id"> {{__('Referrer ID')}}  </label>
-                                            <input required type="text" class="form-control" id="agt_referrer_id" name="agt_referrer_id" >
+                                            <input required type="text" value="{{session('referrer_agent_id')}}" readonly class="form-control" id="agt_referrer_id" name="agt_referrer_id" >
                                         </div>
-                                        </div> 
-                    
+                                        </div>
+                                        
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="agt_username"> {{__('Username')}}  </label>
                                                 <input required type="text" class="form-control" id="agt_username" name="agt_username">
-                                                </div>
-                                            </div> 
+                                            </div>
+                                        </div> 
                         
                                             <div class="col-md-6">
                                             <div class="form-group">
@@ -441,9 +441,9 @@
 
     <!-- jquery.steps js -->
 {{-- <script src='https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.js'></script> --}}
-<script src="{{ asset('css/dist/js/jquery.validate.js') }}"></script>
-<script src="{{ asset('css/dist/js/jquery.steps.js') }}"></script>
-<script src="{{ asset('css/dist/js/particles.js') }}"></script>
+<script src="{{ asset('dist/js/jquery.validate.js') }}"></script>
+<script src="{{ asset('dist/js/jquery.steps.js') }}"></script>
+<script src="{{ asset('dist/js/particles.js') }}"></script>
 
 
 <script>
@@ -502,10 +502,10 @@
                       'X-CSRF-TOKEN': $("input[name=_token]").val()
                   }
               });
-
+            
             $.ajax({
                 type: 'POST',
-                url: '{{ url("/admin/agent") }}',
+                url: '{{ route("agent.ref_submit_form") }}',
                 data: new FormData(this),
                 dataType: 'json',
                 contentType: false,
@@ -514,17 +514,15 @@
                 beforeSend: function() { 
                     $('#form_wizard').css("opacity",".5"); 
                 },
-                success: function(response) {   var error_msg='';   var success = false;
+                success: function(response) {   var error_msg='';   var success = false; 
                     $('#error_msg').show(); 
                     for (const key of Object.keys(response)){
                          console.log(key, response[key]);  if (response[key].includes("registered successfully")) { success = true; }
                         error_msg += (' <div class="alert alert-success mb-1" style="font-size:14px;">'+response[key]+'</div>'); 
                     }
-                    $('#error_msg').html(error_msg);
-                    $('#form_wizard').css("opacity","");  
-                    fetch_saved_data();
-
-                    if (success === true) { $('#form_wizard').find("input[type=text], input[type=password], input[type=email], input[type=digits], input[type=date], input[type=number], textarea, select").val(""); }
+ 
+                    if (success == true) {   $('#reg_div').html('<p class="mb-0 text-center">Registration was successfull, proceed to log in below <br> <br> <a href="{{route('login')}}" class="btn btn-primary w-75">Log In</a></p>'); } 
+                    else         { $('#error_msg').html(error_msg); }
                 }
             });
         }

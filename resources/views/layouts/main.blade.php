@@ -20,30 +20,30 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
       <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
   <!-- iCheck -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- JQVMap -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/jqvmap/jqvmap.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/jqvmap/jqvmap.min.css') }}">
   <!-- Theme style -->
-  <link rel="stylesheet" href="{{ asset('css/dist/css/adminlte.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
   <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
   <!-- Daterange picker -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/daterangepicker/daterangepicker.css') }}">
+  <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
   <!-- summernote -->
-  <link rel="stylesheet" href="{{ asset('css/plugins/summernote/summernote-bs4.min.css') }}"> 
+  <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}"> 
 
-  <link rel="stylesheet" href="{{ asset('css/dist/css/style.css') }}"> 
+  <link rel="stylesheet" href="{{ asset('dist/css/style.css') }}"> 
 
     <!-- jQuery -->
-<script src="{{ asset('css/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->
-<script src="{{ asset('css/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+<script src="{{ asset('plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 
   <style> 
@@ -71,20 +71,20 @@
   a.btn { white-space: nowrap; }   button.btn { white-space: nowrap; }
   .nav-treeview .nav-item {  padding-left: 14px; }
   .nav-pills .nav-link.active, .nav-pills .show>.nav-link { font-size: 14px; }
-.fade_hd_red { background-color: #fdcece; }
-.fade_bd_red { background-color: #fff0f0; } 
+.fade_hd_red { background-color: #fdcece!important; }
+.fade_bd_red { background-color: #fff0f0!important; } 
 
-.fade_hd_green { background-color: #d7ffd7; }
-.fade_bd_green { background-color: #f0fff0; }
+.fade_hd_green { background-color: #d7ffd7!important; }
+.fade_bd_green { background-color: #f0fff0!important; }
 
-.fade_hd_blue { background-color: #d7e9ff; }
-.fade_bd_blue { background-color: #f0f4ff; }
+.fade_hd_blue { background-color: #d7e9ff!important; }
+.fade_bd_blue { background-color: #f0f4ff!important; }
 .card-body { padding: .5rem; }
 .note_each {
     font-size: 14px;
     white-space: inherit;
     display: inline-block;
-}
+}  .price { color: #007bff; }
 .short_msg { white-space: break-spaces; margin-bottom: 2px; }
 
   @media (min-width: 576px) {
@@ -128,6 +128,12 @@
    @include('components.client_sidebar') 
   @endclient
 
+  @vendor
+    @include('components.vendor_sidebar') 
+  @endvendor
+
+  
+
 
  
   
@@ -154,34 +160,39 @@
 
 
    @if (auth()->user())
-          <script>
-     var patner_id = $('#patner_id').val(); 
- 
- function fetch_chat () { 
-         // after page loading or refresh
-         if ($('#msg_body').length > 0) { var data2send={"patner_id":patner_id};  }
-                                   else { var data2send={"patner_id":""};   }
-         $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
-         $.ajax({
-             url:"{{route('fetch_chat')}}",
-             dataType:"text",
-             method:"GET",
-             data:data2send,
-             success:function(resp) { 
-               if ($('#msg_body').length > 0) {  
-                 $('#msg_body').html(JSON.parse(resp).chatboard_msg.replace(/\\/g, ""));    // console.warn(JSON.parse(resp).active_time);
-                 $('#active_time').html(JSON.parse(resp).active_time.replace(/\\/g, ""));    
-               }
-                 $('#topnav_msg').html(JSON.parse(resp).topnav_msg.replace(/\\/g, ""));
-                 var element = document.getElementById("msg_body");
-                 element.scrollTop = element.scrollHeight;  
-             }
-         });
-    }  
- var intervalId = window.setInterval(function() {
-  fetch_chat(); // fetch new chat data at 5 seconds interval
- }, 5000);
-          </script>
+        <script>
+        
+            var patner_id = $('#patner_id').val(); 
+        
+            function fetch_chat () { 
+                // after page loading or refresh
+                if ($('#msg_body').length > 0) { var data2send={"patner_id":patner_id};  }
+                                        else { var data2send={"patner_id":""};   }
+                $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+                $.ajax({
+                    url:"{{route('fetch_chat')}}",
+                    dataType:"text",
+                    method:"GET",
+                    data:data2send,
+                    success:function(resp) { 
+                    if ($('#msg_body').length > 0) {  
+                        $('#msg_body').html(JSON.parse(resp).chatboard_msg.replace(/\\/g, ""));    // console.warn(JSON.parse(resp).active_time);
+                        $('#active_time').html(JSON.parse(resp).active_time.replace(/\\/g, ""));  
+
+                         var element = document.getElementById("msg_body");
+                        element.scrollTop = element.scrollHeight;    
+                    }
+                        $('#topnav_msg').html(JSON.parse(resp).topnav_msg.replace(/\\/g, ""));
+            
+                    }
+                });
+            }
+             
+            var intervalId = window.setInterval(function() {
+            fetch_chat(); // fetch new chat data at 5 seconds interval
+            }, 5000);
+           
+        </script>
    @endif
 
   <!-- Control Sidebar -->

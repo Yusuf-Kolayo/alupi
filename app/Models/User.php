@@ -58,6 +58,10 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\Client', 'client_id', 'user_id');
     }  
 
+    public function vendor() {
+        return $this->hasOne('App\Models\Vendor', 'vendor_id', 'user_id');
+    }   
+
 
     public function notification () {
         return $this->hasMany('App\Models\Notification', 'receiver_id', 'user_id');

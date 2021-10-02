@@ -33,9 +33,8 @@ class AgentController extends BaseController
      */
     public function index()
     {
-        $catchments = Catchment::all();   
-        // return view('admin.agents', compact('catchments')); 
-        return view('admin.agents')->with('catchments', $catchments); ; 
+        $catchments = Catchment::all();   $agents = Agent::orderBY('id', 'desc')->get(); 
+        return view('admin.agents', compact('catchments','agents')); ; 
     }
 
 
@@ -103,7 +102,7 @@ class AgentController extends BaseController
         'ut_agt_fullname' => 'Agent fullname at undertaken section', 
         'ut_agt_location' => 'Agent location at undertaken section',
         'ut_agt_position' => 'Agent work position at undertaken section'
-    );
+        );
         $validator = Validator::make($request->all(),
            [
             'agt_first_name' => ['required', 'string', 'max:55'],
@@ -163,12 +162,13 @@ class AgentController extends BaseController
             // create undertaken statement
             $grt_undertaken = 'I '.$request['grt_first_name'].' whose particulars are as above personally recommend '.$request['agt_first_name'].' residing at '.$request['ut_agt_location'].' Employed by ADROITLINK-UP INT'."'".'L as '.$request['ut_agt_position'];
 
-            $sql = DB::select("show table status like 'users'");
+            $sql = DB::select("show table status like 'users'");  $acct_status = 'approved';
             $next_id = 100 + $sql[0]->Auto_increment;
             $agent = Agent::create([   
                 'agent_id' => 'AGT-'.$next_id,
                 'referrer_id' => $request['agt_referrer_id'], 
                 'catchment_id' => $request['catchment_id'],
+                'acct_status'  => $acct_status,
                 'agt_first_name' => $request['agt_first_name'],
                 'agt_last_name' =>  $request['agt_last_name'], 
                 'agt_other_name' =>  $request['agt_other_name'], 
@@ -410,91 +410,26 @@ class AgentController extends BaseController
         return redirect(route('agent.index'))->with('success', 'Agent deleted !');  
     }
 
- 
- 
 
-    //  ----------------------------------------------------------------------  //
+    
 
+    public function assign_catchment (Request $request)
+    {
+        $agent_id = $request['agent_id'];    // dd($request);
+        $username = User::where('user_id', $agent_id)->value('username');  // dd($username); 
 
-
-
-    public function show_referring_form ($agent_id)
-    { 
-        // dd($agent_id);
-        $referrer_agent = Agent::where('agent_id', $agent_id)->firstOrFail();
-        return view('agent_email_form', compact('referrer_agent'));
-    }
-
-
-
-    public function send_referee_mail (Request $request)
-    {   // dd($request);
-
-        $data = request()->validate([
-            'referee_email' => ['required', 'string', 'email', 'max:100']
+        $affected1 = DB::table('agents')
+        ->where('agent_id', $agent_id)
+        ->update([ 
+            'catchment_id' => $request['catchment_id'],
+            'acct_status' => 'approved'
         ]); 
-
-        $referrer_agent_id = $request['referrer_agent_id']; 
-        $referee_email = $request['referee_email'];
-        $referrer_agent = Agent::where('agent_id', $referrer_agent_id)->firstOrFail();
         
-        $i = 1;
-        while($i<=1) {
-            $code = random_int(1000000, 9999999);  //  dd($code);
-            $verification_code = Verification_code::where('code', $code)->first();
-            if ($verification_code) { $i=1; } 
-            else { 
-                $verification = Verification_code::create ([
-                    'code' => $code,
-                    'channel_type' => 'email',
-                    'channel_value' => $referee_email,
-                    'status' =>  'sent'
-                ]);
-                $i++;
-            }
-        }  
-        
-        $details = ['code'=> $code];
-          //$sent = Mail::to($referee_email)->send(new Referee_email_val($details));
-          //echo $referee_email;
-        //   if ($sent) {
-            session(['ref_email_val'=>true, 'referrer_agent_id'=>$referrer_agent_id]); 
-            return view('agent_code_form', compact('referee_email','referrer_agent'));
-        //   } else {
-        //     session(['ref_email_val'=>false, 'referrer_agent_id'=>$referrer_agent_id]); 
-        //     $error = 'An error occurred when trying to send verification code, pls try again';
-        //     Session::flash(['message', $error]);
-        //     return view('agent_email_form', compact('referrer_agent'));
-        //   }
-       
+        return redirect(route('agent.show', ['agent'=>$username]))->with('success', 'Catchment assigned successfully!');  
     }
 
-
-
-    public function check_referee_code (Request $request)
-    {   // dd($request); 
-        $data = request()->validate([
-            'referee_code' => ['required', 'string', 'max:100']
-        ]); 
-
-        $referrer_agent_id = $request['referrer_agent_id'];
-        $referee_code  = $request['referee_code'];
-        $referee_email  = $request['referee_email'];
-
-        $referrer_agent = Agent::where('agent_id', $referrer_agent_id)->firstOrFail();
-        // dd($referrer_agent);
-        $verification_code = Verification_code::where(['code'=> $referee_code, 'channel_type'=>'email', 'channel_value'=>$referee_email])->first();
  
-        if ($verification_code) {
-            $msg = 'Email verification was successfull, now fill in the form below with the accurate information';
-            Session::flash('message', $msg);
-            return view('agent_singup_form', compact('referee_email','referrer_agent'));
-        } else {
-            $error = 'Invalid verification, please check for the correct code';
-            Session::flash('message', $error);
-            return view('agent_code_form', compact('error','referee_email','referrer_agent'));
-        } 
 
 
-    }
+ 
 }

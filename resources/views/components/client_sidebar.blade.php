@@ -3,7 +3,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
   <a href="{{ route('dashboard') }}" class="brand-link">
-    <img src=" {{ asset('css/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <img src=" {{ asset('dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
     <span class="brand-text font-weight-light"> ALUPI ITN'L</span>
   </a>
 
@@ -33,6 +33,53 @@
           <a href="{{ route('dashboard') }}" class="nav-link ">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p> {{__('Dashboard')}} </p>
+          </a> 
+        </li>    
+
+
+
+          
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-shopping-cart"></i>
+            <p>
+               Catalog
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a> 
+      
+            <ul class="nav nav-treeview"> 
+              @foreach ($main_categories as $main_category)
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    {{$main_category->cat_name}}
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  @foreach ($main_category->children as $item)
+                  <li class="nav-item">
+                    <a href="{{route('product.sub',['sub_category_id'=>$item->id])}}" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p> {{$item->cat_name}}</p>
+                    </a>
+                  </li> 
+                  @endforeach 
+                </ul>
+              </li> 
+              @endforeach 
+            </ul> 
+        </li> 
+
+        
+
+
+        <li class="nav-item">
+          <a href="{{ route('client.my_account_oficer', ['agent'=>auth()->user()->client->agent->agent_id]) }}" class="nav-link ">
+            <i class="nav-icon fas fa-user"></i>
+            <p> {{__('Account Officer')}} </p>
           </a> 
         </li>    
        

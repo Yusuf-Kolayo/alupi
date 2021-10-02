@@ -96,7 +96,7 @@
                 <div class="card-body">
                   <div class="tab-content">
                     <div class="active tab-pane table-responsive" id="transactions"> 
-                      <table id="t1" class="table table-bordered table-striped" style="width:900px;">
+                      <table id="t1" class="table table-bordered" style="width:900px;">
                         <thead>
                         <tr>
 
@@ -104,7 +104,7 @@
                           <th>Product ID</th>
                           <th>Session ID</th>
                           <th>Amount</th>    <th>Balance</th>
-                          <th>Type</th>
+                          <th>Type</th>      <th>Status</th>
                           <th>Date</th> 
                           <th></th>  <th></th>  
                         </tr>
@@ -115,30 +115,34 @@
                           @if (count($product_purchase_session->transaction)>0) 
                           @php $last_trans_id = $product_purchase_session->transaction->last()->trans_id @endphp
                             <tr> 
-                              <td colspan="7">Transactions on session: <b>{{$product_purchase_session->pps_id}} </b> </td>
+                              <td colspan="8">Transactions on session: <b>{{$product_purchase_session->pps_id}} </b> </td>
                               <td colspan="3"> <a href="#" onclick="select_trans_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs btn-block">Session Details</a> </td> 
                             </tr> 
                             @foreach($product_purchase_session->transaction->sortKeysDesc() as $transaction)
-                                @php $allow_edit = false;
-                                if ($transaction->trans_id==$last_trans_id) { $allow_edit= true; }      // set some initial values and conditions
-                                @endphp
-                            <tr>
+                            @php $allow_edit = false;  $tr_bg_class = '';
+                            if ($transaction->trans_id==$last_trans_id) { $allow_edit= true; }      // set some initial values and conditions
+                            if ($transaction->status=='pending') { $tr_bg_class = 'fade_bd_red'; }
+                            if ($transaction->status=='approved') { $tr_bg_class = 'fade_bd_blue'; }     
+                            @endphp
+                            <tr class="{{$tr_bg_class}}">
                                 <td> {{$transaction->trans_id}}   </td>
                                 <td> {{$transaction->product_id}} </td>
                                 <td> {{$transaction->pps_id}} </td>
                                 <td> {{$transaction->amount}} </td>   <td> {{$transaction->new_bal}} </td>
-                                <td> {{$transaction->type}}   </td>     
+                                <td> {{$transaction->type}}   </td>   <td> {{$transaction->status}}  </td> 
                                 <td> {{$transaction->created_at}} </td>   
-                                <td> 
-                                    @if ($allow_edit===true) 
+                                @if (auth()->user()->usr_type=='usr_client')
+                                   <td colspan="2"></td>
+                                @else
+                                    <td>  @if ($allow_edit===true) 
                                       <a href="#" onclick="trans_edit_modal('{{$transaction->trans_id}}')" class="btn btn-primary btn-xs btn-block"> <span class="fas fa-edit"></span> Update</a>  
                                     @endif
-                                </td>
-                                <td>
-                                    @if ($allow_edit===true) 
-                                    <a href="#" onclick="trans_delete_modal('{{$transaction->trans_id}}')" class="btn btn-danger btn-xs btn-block"> <span class="fas fa-trash"></span> Delete</a> 
-                                    @endif
-                                </td>
+                                  </td>
+                                  <td>  @if ($allow_edit===true) 
+                                      <a href="#" onclick="trans_delete_modal('{{$transaction->trans_id}}')" class="btn btn-danger btn-xs btn-block"> <span class="fas fa-trash"></span> Delete</a> 
+                                      @endif
+                                  </td>
+                                @endif  
                             </tr>
                           @endforeach
                           @else
