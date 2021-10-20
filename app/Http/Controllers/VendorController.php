@@ -138,10 +138,12 @@ class VendorController extends BaseController
 
     public function pick_vendor_price(Request $request) { // dd($request);
         $product_id = $request['product_id'];    $vendor_price_id = (int) $request['vendor_price_id'];
-        $vendor_price = Vendor_price::find($vendor_price_id); $new_price =  $vendor_price->price;
+        $vendor_price = Vendor_price::find($vendor_price_id); $base_price =  $vendor_price->price;
         $vendor_id = $vendor_price->vendor_id;   
         $product = Product::where('product_id', $product_id)->first();
      
+        $new_price = ((20/100) * $base_price) + $base_price; 
+
         if(Product::where('product_id', $product_id)
         ->update(['price' => $new_price])>0) {  // if update successfull
 

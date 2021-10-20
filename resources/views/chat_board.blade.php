@@ -64,7 +64,8 @@
                   </div><!-- /.card-header -->
                   <div class="card-body">
                 @foreach ($chat_patners as $user) 
-                  @php  // dd($user);
+                  @php
+                      // dd($user);
                       //  if ($user[0]->usr_type=='usr_admin') { 
                       //       $fullname = $user[0]->staff->agt_first_name.' '.$user[0]->staff->agt_first_name;   
                       //   } elseif ($user[0]->usr_type=='usr_agent') {
@@ -116,7 +117,8 @@
     </button>
   </div>
 </div>
-<!-- /.card-header -->
+<!-- card-header -->
+
 <div class="card-body">
   <!-- Conversations are loaded here -->
   @if ($chat_patner)
@@ -216,10 +218,10 @@
       
 <script>
 
-    window.onload = (event) => {   
+  window.onload = (event) => {   
 
     
-    $('#form_msg').on('submit', function(e){
+      $('#form_msg').on('submit', function(e){
         e.preventDefault();   
         $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
         $.ajax({
@@ -238,6 +240,7 @@
                     } else {  console.warn(response.message);  }  
                 }
             });  
+
     });
     
     

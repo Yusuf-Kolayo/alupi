@@ -15,7 +15,7 @@ use App\Models\Transaction;
 use App\Models\Activity; 
 use App\Models\Notification;   
 use App\Models\Message;   
-use App\Models\Vendor_price;   
+use App\Models\Vendor_price;        
   
 
 
@@ -52,14 +52,7 @@ class BaseController extends Controller
         });
  
     }
-
-
-
-
-
-
-
-
+ 
 
     public function index()
     {
@@ -145,7 +138,7 @@ class BaseController extends Controller
 
     public function chat_board ($receiver_id=null)
     { 
-      $chat_patner = User::where('user_id', $receiver_id)->first();     $curr_user_id = auth()->user()->user_id;       $chat_patners = array();
+      $chat_patner = User::where('user_id', $receiver_id)->first();      $curr_user_id = auth()->user()->user_id;       $chat_patners = array();
       $chat_patner_ids = array_unique(json_decode(Message::where('sender_id', $curr_user_id)->pluck('receiver_id')));   //  dd($chat_patner_ids); 
       foreach ($chat_patner_ids as $key => $chat_patner_id) {
          $user_info = User::where('user_id', $chat_patner_id)->first(); 
@@ -155,6 +148,7 @@ class BaseController extends Controller
          
          $chat_patners[] = [$user_info, $last_msg_rows];
       } 
+      
       return view('chat_board', compact('chat_patner', 'chat_patners'));
     }   
     

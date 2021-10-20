@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', "ALUPI ITNL") }}</title>
-
+  
 
   <!-- Fonts -->
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -159,11 +159,13 @@
   @include('components.footer')
 
 
-   @if (auth()->user())
-        <script>
-        
-            var patner_id = $('#patner_id').val(); 
-        
+  @if (auth()->user())
+ <script>
+ $(document).ready(function() { 
+//    $(window).load(function() { 
+            
+ 
+            var patner_id = $('#patner_id').val();  
             function fetch_chat () { 
                 // after page loading or refresh
                 if ($('#msg_body').length > 0) { var data2send={"patner_id":patner_id};  }
@@ -191,8 +193,12 @@
             var intervalId = window.setInterval(function() {
             fetch_chat(); // fetch new chat data at 5 seconds interval
             }, 5000);
-           
-        </script>
+
+
+//   });
+});
+
+ </script>
    @endif
 
   <!-- Control Sidebar -->

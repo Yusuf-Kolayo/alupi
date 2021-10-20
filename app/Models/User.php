@@ -9,9 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Notification;
 
 class User extends Authenticatable
-{
+{   
     use HasFactory, Notifiable;
-
+    
     /**
      * The attributes that are mass assignable.
      *

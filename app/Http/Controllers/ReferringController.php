@@ -67,8 +67,9 @@ class ReferringController extends Controller
             }
         }  
         
-        $details = ['code'=> $code];
-        //  $sent = Mail::to($referee_email)->send(new Referee_email_val($details));
+        
+         $details = ['code'=> $code];
+         $sent = Mail::to($referee_email)->send(new Referee_email_val($details));
         //  echo $referee_email;
         //   if ($sent) {
             session(['ref_email_val'=>true, 'referrer_agent_id'=>$referrer_agent_id]); 

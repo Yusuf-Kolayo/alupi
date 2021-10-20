@@ -92,7 +92,7 @@
 
                           <th>SN</th>
                           <th>Vendor</th>
-                          <th>Price</th>   
+                          <th>Base Price</th>    <th>Final Price</th>   
                           <th></th>   
                         </tr>
                         </thead>
@@ -100,11 +100,11 @@
                    
                           @php $sn=0; @endphp
                           @foreach($product->vendor_price as $vendor_price)  
-                            @php $sn++; @endphp
+                            @php $sn++;      $new_price = ((20/100) * $vendor_price->price) + $vendor_price->price;   @endphp
                             <tr class="">
                                 <td> {{$sn}} </td>
                                 <td> {{$vendor_price->vendor->full_name}} </td>
-                                <td> {{$vendor_price->price}} </td>     
+                                <td> {{$vendor_price->price}} </td>         <td> {{$new_price}} </td>     
                                 <td> <button class="btn btn-primary btn-sm btn-block" onclick="pick_vendor_price('{{$vendor_price->product_id}}','{{$vendor_price->id}}')">Assign Price</button> </td>                                       
                             </tr>
                           @endforeach
