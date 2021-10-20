@@ -9,7 +9,7 @@
              <tr><td>Product ID</td>  <td><b>{{$product->product_id}}</b></td></tr>
              <tr><td>Name</td>        <td><b>{{$product->prd_name}}</b></td></tr>
              <tr><td>Price</td>       <td><b>{{$product->price}}</b></td></tr>
-             <tr><td>Description</td> <td><b>{{$product->description}}</b></td></tr>
+             <tr><td>Description</td> <td><b>{!!$product->description!!}</b></td></tr>
          </table>
     </div>   
 </div>

@@ -4,13 +4,13 @@
 <style>
  .direct-chat-messages, .direct-chat-contacts { height:350px; }
  .cust {
- font-size: 13px; background-color: #e2e2e2; padding: 5px;
+ font-size: 14px; background-color: #e2e2e2; padding: 7px;
  color: #000; width: 85%; float: left; border-radius: 5px;
  }
  .tmcus{ font-size: .8em; float: right!important; }
  .comp {
- font-size: 13px; background-color: #bedaff;
- color: #000; padding: 5px; width: 85%;
+ font-size: 14px; background-color: #bedaff;
+ color: #000; padding: 7px; width: 85%;
  float: right; border-radius: 5px;
  }
  .con {
@@ -64,7 +64,8 @@
                   </div><!-- /.card-header -->
                   <div class="card-body">
                 @foreach ($chat_patners as $user) 
-                  @php  // dd($user);
+                  @php
+                      // dd($user);
                       //  if ($user[0]->usr_type=='usr_admin') { 
                       //       $fullname = $user[0]->staff->agt_first_name.' '.$user[0]->staff->agt_first_name;   
                       //   } elseif ($user[0]->usr_type=='usr_agent') {
@@ -84,7 +85,7 @@
 
 
                         @if ($user[1])
-                        <p class="text-sm short_msg">{{$user[1]->message}}</p>
+                        <p class="text-sm short_msg">{{substr($user[1]->message,0,75)}} ...</p>
                         <p class="text-sm text-muted mb-0"><i class="far fa-clock mr-1"></i>{{$user[1]->created_at}}</p>
                         @else
                         <p class="text-sm short_msg">---</p>
@@ -116,7 +117,8 @@
     </button>
   </div>
 </div>
-<!-- /.card-header -->
+<!-- card-header -->
+
 <div class="card-body">
   <!-- Conversations are loaded here -->
   @if ($chat_patner)
@@ -143,14 +145,14 @@
                 <!-- End Contact Item -->
                 <li>
                     <a href="{{route('chat_board', ['user_id'=>$user[0]->user_id])}}">
-                        <img class="contacts-list-img" src="{{asset('css/dist/img/user7-128x128.jpg') }}" alt="User Avatar">
+                        <img class="contacts-list-img" src="{{asset('dist/img/user7-128x128.jpg') }}" alt="User Avatar">
 
                         <div class="contacts-list-info">
                         <span class="contacts-list-name">
                            {{$user[0]->username}}
 
                            @if ($user[1])
-                           <small class="contacts-list-date float-right">{{$user[1]->message}}</small>
+                           <small class="contacts-list-date float-right">{{substr($user[1]->message,0,75)}} ...</small>
                            @else
                            <small class="contacts-list-date float-right">---</small>
                            @endif
@@ -216,10 +218,10 @@
       
 <script>
 
-    window.onload = (event) => {   
+  window.onload = (event) => {   
 
     
-    $('#form_msg').on('submit', function(e){
+      $('#form_msg').on('submit', function(e){
         e.preventDefault();   
         $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
         $.ajax({
@@ -238,6 +240,7 @@
                     } else {  console.warn(response.message);  }  
                 }
             });  
+
     });
     
     

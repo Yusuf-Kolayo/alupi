@@ -22,4 +22,12 @@ class Product extends Model
     public function sub_category() {
         return $this->belongsTo('App\Models\Category', 'sub_category_id', 'id');
     } 
+
+    public function vendor_price() {
+        return $this->hasMany('App\Models\Vendor_price', 'product_id', 'product_id')->orderBy('price', 'desc');
+    } 
+
+    public function product_purchase_session() {
+        return $this->hasMany('App\Models\Product_purchase_session', 'product_id', 'product_id');
+    } 
 }

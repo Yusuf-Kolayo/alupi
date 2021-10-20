@@ -58,7 +58,7 @@ class ProductController extends BaseController
         $data = request()->validate([
             'img_name' => ['required', 'image'],
             'prd_name' => ['required', 'string', 'max:100'],
-            'description' => ['required', 'string', 'max:1000'],
+            'description' => ['required', 'string', 'max:100000'],
             'brand_id' => ['required', 'string', 'max:55'],
             'price' => ['required', 'string', 'max:55'],
             'main_category_id' => ['required', 'string', 'max:55'],
@@ -148,16 +148,18 @@ class ProductController extends BaseController
 
 
 
-    public function show($id)
-    {
-        $product = Product::findOrFail($id);
+    public function show($product_id)
+    {  
+        $product = Product::where('product_id', $product_id)->firstOrFail();
         return view('admin.product_profile')->with('product',$product);
     }
+
+
 
     public function trash($id)
     {
         $product = Product::findOrFail($id);
-        return view('admin.product_trash')->with('product',$product);
+        return view('admin.product_trash')->with('product', $product);
     }
 
     /**
@@ -180,11 +182,11 @@ class ProductController extends BaseController
      */
     public function update(Request $request, $product_id)
     {
-        // dd ($product_id);
+        // dd ($request['description']);
         $data = request()->validate([
             'img_name' => ['nullable', 'image'],
             'prd_name' => ['required', 'string', 'max:100'],
-            'description' => ['required', 'string', 'max:1000'],
+            'description' => ['required', 'string', 'max:100000'],
             'brand_id' => ['required', 'string', 'max:55'],
             'price' => ['required', 'string', 'max:55'],
             'main_category_id' => ['required', 'string', 'max:55'],

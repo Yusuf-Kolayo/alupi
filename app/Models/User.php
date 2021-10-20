@@ -9,9 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Notification;
 
 class User extends Authenticatable
-{
+{   
     use HasFactory, Notifiable;
-
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -57,6 +57,10 @@ class User extends Authenticatable
     public function client() {
         return $this->hasOne('App\Models\Client', 'client_id', 'user_id');
     }  
+
+    public function vendor() {
+        return $this->hasOne('App\Models\Vendor', 'vendor_id', 'user_id');
+    }   
 
 
     public function notification () {

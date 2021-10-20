@@ -19,11 +19,11 @@
                       </div> 
   
   
-  
+   
                       <div class="col-md-12">
                           <div class="form-group">
                             <label> Description </label>
-                            <textarea name="description" id="textarea" class="form-control"  rows="2">{{$product->description}}</textarea>
+                            <textarea name="description" id="editor2" class="ck_editor form-control"  rows="2">{!!$product->description!!}</textarea>
                           </div>
                         </div>
   
@@ -82,7 +82,9 @@
 
 
 
-<script>
+<script>   CKEDITOR.replace( 'editor2' );   //
+   $(".cke_editable").keyup(function(){   console.log('message');   });
+
 // FETCH IMAGE INTO SELECT FIELD ON ADD PRODUCT FORM
 function readURL(input) {
     if (input.files && input.files[0]) {
@@ -103,6 +105,10 @@ function readURL(input) {
     $(document).ready(function(){
     $('#product_update_form').on('submit', function(e){
         e.preventDefault(); 
+
+        for ( instance in CKEDITOR.instances )
+        CKEDITOR.instances[instance].updateElement();
+        
         var product_id = $('#product_id_update_form').val() ; console.warn(product_id);
             $.ajax({
                 type: 'POST',

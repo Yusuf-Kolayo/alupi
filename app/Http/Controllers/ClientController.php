@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\Models\Client;
 use App\Models\User; 
+use App\Models\Agent; 
 use App\Models\Product_purchase_session;
 use App\Models\Transaction;
 use App\Models\Category;
@@ -105,21 +106,21 @@ class ClientController extends BaseController
 
         $user = User::create ([
             'user_id' => $client_id,
-            'username' => strtolower($request['username']),
-            'email' => $request['email'],
-            'password' => Hash::make($request['password']),
+            'username' => strtolower($data['username']),
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
             'usr_type' => $usr_type
         ]);
     
     
         // save user activity
         $type = 'new_client_reg';
-        $activity = '<b>'.ucfirst(auth()->user()->username).' ['.$agent_id.']</b> registered a new client <b> '.strtolower($request['username']).' ['.$client_id.']</b>';
-        $user = Activity::create ([
+        $activity_msg = '<b>'.ucfirst(auth()->user()->username).' ['.$agent_id.']</b> registered a new client <b> '.strtolower($data['username']).' ['.$client_id.']</b>';
+        $activity = Activity::create ([
             'user_id' => auth()->user()->user_id,
             'usr_type' => auth()->user()->usr_type,
             'type' => $type,
-            'activity' => $activity
+            'activity' => $activity_msg
         ]);
 
         return redirect()->route('client.index')->with('success', 'New client ('.$data['username'].') registered Successfuly into your catchment: '.$catchment_id);
@@ -206,6 +207,18 @@ class ClientController extends BaseController
     
         return redirect()->route('client.show', ['client'=>$client_id])->with('success', 'Profile updated Successfully.');
     }
+
+
+
+
+
+    public function my_account_oficer (Agent $agent)
+    {
+        $agent_id = $agent->agent_id;
+        return redirect()->route('chat_board', ['user_id'=>$agent_id]);
+    }
+
+
 
     /**
      * Remove the specified resource from storage.

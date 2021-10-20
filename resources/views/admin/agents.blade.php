@@ -1,8 +1,8 @@
 @extends('layouts.main')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/dist/css/reset.css') }}">
-<link rel="stylesheet" href="{{ asset('css/dist/css/responsive.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/css/reset.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/css/responsive.css') }}">
 <style>
     input.inp_decl { display: inline-block!important;  height: 21px;  width: 250px; font-size: 13px; }
     p.undertaken {  text-align: center;  font-weight: 600;   border-bottom: 1px solid; margin-bottom: 22px; }
@@ -251,8 +251,8 @@
                                         <option value="{{$catchment->catchment_id}}">{{$catchment->catchment_id}} : {{$catchment->locations}}</option>
                                     @endforeach
                                </select>
-                                </div>
                             </div>
+                        </div>
 
             
                  </div>    
@@ -537,7 +537,65 @@
  
 
 {{-- div to be filled by ajax --}}
-<div id="data_box"></div>
+<div id="data_box">
+    <div class="card">
+        <div class="card-header"><b>{{ __('Registered Agents') }}</b></div>
+        <div class="card-body table-responsive"> 
+             <table id="" class="table table-bordered table-striped" style="width:1200px;">
+              <thead>
+              <tr>
+                <th>ID</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Other names</th>
+                <th>Gender</th>
+                <th>Phone number</th>
+                <th>Chat number</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>State</th> 
+                <th>......</th> 
+              </tr>
+              </thead>
+             <tbody>
+           {{-- loop out agents here --}}
+            
+             @foreach($agents as $agent)
+             @php $bg_class='';  if ($agent->catchment_id)  { $bg_class="fade_bd_blue"; } else {  $bg_class="fade_bd_red"; }
+                 
+             @endphp
+             <tr class="{{$bg_class}}">   
+             <td> {{$agent->agent_id}} </td>
+             <td> {{$agent->agt_first_name}} </td>
+             <td> {{$agent->agt_last_name}} </td>
+             <td> {{$agent->agt_other_name}} </td>
+             <td> {{$agent->agt_gender}} </td>
+             <td> {{$agent->agt_phone_number}} </td>
+             <td> {{$agent->agt_chat_number}} </td>
+             <td> {{$agent->user->email}} </td>
+             <td> {{$agent->agt_res_address}} </td>
+             <td> {{$agent->agt_res_city}} </td> 
+             <td> {{$agent->agt_res_state}} </td>   
+             <td>  <a class="btn btn-primary btn-xs btn-block" href="{{ route('agent.show', ['agent'=>$agent->user->username]) }}"> <span class="fa fa-user"></span> Profile</a> </td>
+             </tr>
+            @endforeach
+              </tbody>
+              <tfoot>
+              <td>
+                <th></th>  <th></th>  <th></th>
+                <th></th>  <th></th> 
+                <th></th> <th></th>
+                <th></th> <th></th>
+                <th></th>  <th></th> 
+              </td>
+              </tfoot>
+            </table>
+    
+    
+        </div>
+    </div>
+</div>
 
 
 
@@ -550,9 +608,9 @@
 
 <!-- jquery.steps js -->
 {{-- <script src='https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.js'></script> --}}
-<script src="{{ asset('css/dist/js/jquery.validate.js') }}"></script>
-<script src="{{ asset('css/dist/js/jquery.steps.js') }}"></script>
-<script src="{{ asset('css/dist/js/particles.js') }}"></script>
+<script src="{{ asset('dist/js/jquery.validate.js') }}"></script>
+<script src="{{ asset('dist/js/jquery.steps.js') }}"></script>
+<script src="{{ asset('dist/js/particles.js') }}"></script>
 
 
 <script>
@@ -623,7 +681,10 @@
                 beforeSend: function() { 
                     $('#form_wizard').css("opacity",".5"); 
                 },
-                success: function(response) {   var error_msg='';   var success = false;
+                success: function(response) {   var error_msg='';   var success = false; console.warn(response); console.table(response);
+                if (response.status==1) { 
+                    $('#add_new').html('<p class="mb-2">Registration Succesful <br> <a href="'+{{route('login')}}+'" class="btn btn-primary">Log In</a> </p>')
+                } else {
                     $('#error_msg').show(); 
                     for (const key of Object.keys(response)){
                          console.log(key, response[key]);  if (response[key].includes("registered successfully")) { success = true; }
@@ -634,6 +695,7 @@
                     fetch_saved_data();
 
                     if (success === true) { $('#form_wizard').find("input[type=text], input[type=password], input[type=email], input[type=digits], input[type=date], input[type=number], textarea, select").val(""); }
+                }
                 }
             });
         }
@@ -688,7 +750,7 @@ const subcat_id = urlParams.get('id')
             }
         });
 }
-fetch_saved_data ();
+// fetch_saved_data ();
 
 </script>
 
