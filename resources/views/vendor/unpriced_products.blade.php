@@ -21,7 +21,7 @@
                     <div class="card-body"> 
                       <h6><a href="{{route('product.show', ['product'=>$product->product_id])}}" style="color:#383a46;">{{$product->prd_name}}</a></h6> 
                       @admin    
-                          <p class="mb-0 price"><b>Price: {{number_format($product->price)}}</b></p>
+                          <p class="mb-0 price"><b>Price: {{number_format($product->install_price)}}</b></p>
                       @endadmin  
                       @vendor    
                            <p class="mb-0 price"><b>Price: <span id="PRC_{{$product->product_id}}"> --- </span></b> </p>

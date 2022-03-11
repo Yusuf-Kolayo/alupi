@@ -31,8 +31,8 @@
                     <tr><td>Client Name</td> <td> <b>{{$product_purchase_session->client->first_name}} {{$product_purchase_session->client->last_name}} {{$product_purchase_session->client->other_name}}</b></td></tr>
                     <tr><td>Product ID</td>  <td> <b>{{$product_purchase_session->product->product_id}}</b></td></tr>
                      <tr><td>Product Name </td>       <td><b>{{$product_purchase_session->product->prd_name}}</b></td></tr>
-                     <tr><td>Product Price</td>       <td><b>{{number_format($product_purchase_session->product->price)}}</b></td></tr>
-                     <tr><td>Description</td> <td> <b>{{$product_purchase_session->product->description}}</b></td></tr>
+                     <tr><td>Product Price</td>       <td><b>{{number_format($product_purchase_session->product->install_price)}}</b></td></tr>
+                     <tr><td>Description</td> <td> <b>{!!$product_purchase_session->product->description!!}</b></td></tr>
                      <tr><td>Session Status</td> <td><b>{{$product_purchase_session->status}}</b></td></tr>
               @admin <tr><td>Agent</td>  <td><b>{{$product_purchase_session->client->agent->user->username}} </b></td></tr> @endadmin
         

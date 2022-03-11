@@ -19,4 +19,19 @@ class Category extends Model
         return $this->hasMany('App\Models\Category', 'parent_id', 'id');
     } 
 
+
+    public function products () {
+        return $this->hasMany('App\Models\Product', 'main_category_id', 'id');
+    }
+
+    public function sub_products () {
+        return $this->hasMany('App\Models\Product', 'sub_category_id', 'id');
+    }
+
+    
+    public function slug () {  
+        $var =  strtolower(str_replace(' ','-',$this->cat_name));
+        $var = str_replace('&','-',$var);
+        return $var;
+    }
 }

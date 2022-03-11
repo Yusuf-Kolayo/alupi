@@ -10,7 +10,7 @@
             <div class="card-body">
                 
                 {!! Form::open(['route' => ['category.store'], 'method'=>'POST', 'files' => true]) !!} 
-                    <ul class="nav nav-pills">
+                    <ul class="nav nav-pills m-1">
                         <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#tabItem5"> <span> General </span> </a>  </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#tabItem6">     <span> SEO </span> </a>         </li>  
                     </ul>
@@ -44,7 +44,7 @@
                                                 <label>  Parent </label>
                                                 <select name="parent_id" class="form-control">
                                                     <option value="0">None</option> 
-                                                @foreach ($main_categories as $main_category)
+                                                @foreach ($all_categories as $main_category)
                                                     <option value="{{$main_category->id}}">{{$main_category->cat_name}}</option>
                                                 @endforeach
                                                 </select> 
@@ -117,9 +117,9 @@
 
 
 
-        <div class="card">
+        <div class="card mt-5">
           <div class="card-header">{{ __('Registered main categories') }}</div>
-          <div class="card-body"> 
+          <div class="card-body table-responsive"> 
                <table id="example1" class="table table-bordered table-striped" style="width:1100px;">
                 <thead>
                 <tr> 
@@ -155,7 +155,7 @@
                     <button class="btn btn-primary btn-sm m-1" onClick="view_cat_modal('{{$main_category->id}}', 'no')"> <em class="fas fa-eye"></em> View Sub-category </button>  
                 </td> 
                 <td>
-                    <a href="#" class="btn btn-primary btn-sm m-1" onClick="update_cat_modal('{{$main_category->id}}', 'no')"> <em class="fas fa-edit"></em> Update</a>  
+                    <a href="JavaScript:void(0)" class="btn btn-primary btn-sm m-1" onClick="update_cat_modal('{{$main_category->id}}', 'no')"> <em class="fas fa-edit"></em> Update</a>  
                 </td> 
                 <td>
                     <button class="btn btn-danger btn-sm m-1" onClick="delete_cat_modal('{{$main_category->id}}', 'no')"> <em class="fas fa-trash"></em> Delete</button> </td>
@@ -163,13 +163,6 @@
               </tr>
            @endforeach
                 </tbody>
-                <tfoot>
-                <tr>
-                  <th></th>    <th></th>    <th></th>    <th></th> 
-                     <th></th> 
-                  <th></th>    <th></th>    <th></th>    <th></th> 
-                </tr>
-                </tfoot>
               </table>
 
 
@@ -179,7 +172,6 @@
 
 
 
-  <x-datatables />    {{-- datatables js scripts --}}
 
 
 
@@ -200,35 +192,127 @@
 
 
 
-  {{-- VIEW SUB-CATEGORIES MODAL --}}
-  <div class="modal fade" id="view_cat_modal">
-    <div class="modal-dialog large_modal"  id="view_ready_div">  
-       <div class="text-center mt-5"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>    
+
+    {{-- VIEW SUB-CATEGORIES MODAL --}}
+    <div class="modal fade" id="view_cat_modal">
+        <div class="modal-dialog large_modal"  id="view_ready_div">  
+        <div class="text-center mt-5"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>    
+        </div>
+    </div>
+
+
+
+  
+  
+    
+    <!-- UPDATE BANNER MODAL -->
+<div class="modal fade" id="update_cat_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document"> 
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" style="display:inline;" id="exampleModalLabel"> Update Category </h5>
+          <button type="button" style="float:right;"  class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="update_ready_div">
+           <div class="text-center mt-5 mb-5"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>
+        </div>
+
+  
+      </div> 
+    </div>
+  </div>
+  
+  
+  <!-- DELETE BANNER MODAL -->
+  <div class="modal fade" id="delete_cat_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" style="display:inline;" id="exampleModalLabel"> Delete Category</h5>
+  
+          <button type="button" style="float:right;"  class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+  
+          <p class="mb-0" style="font-size:15px;">Are you sure to delete this category ? </p> 
+        </div>
+
+        <div id="delete_ready_div">
+            <div class="text-center mt-5 mb-5"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>   
+        </div>
+      
+      
+      </div>
     </div>
   </div>
 
 
 
+      
+
+@section('page_scripts')
+<script>
+  function view_cat_modal(main_cat_id, parent) {
+      var data2send={'main_cat_id':main_cat_id, 'element':'table'};
+      $('#view_cat_modal').modal('show');  
+      $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+      $.ajax({
+          url:"{{ route('category.sub_cat_ajax_fetch') }}",
+          dataType:"text",
+          method:"GET",
+          data:data2send,
+          success:function(resp){
+              $('#view_ready_div').html(resp);
+          }
+    }); 
+  }
 
 
 
+  
+// UPDATE CATEGORY MODAL
+function update_cat_modal(cat_id) {   
+      $('#update_cat_modal').modal('show');  
+      $('#update_ready_div').html('<div class="text-center mt-5 mb-5"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>');
+
+      var data2send={'cat_id':cat_id};
+      $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+      $.ajax({
+          url:"{{ route('category.edit_category_ajax_fetch') }}",
+          dataType:"text",
+          method:"GET",
+          data:data2send,
+          success:function(resp){
+              $('#update_ready_div').html(resp);
+          }
+    }); 
+  }
 
 
+   // DELETE CATEGORY MODAL
+function delete_cat_modal(cat_id) {
+      $('#delete_cat_modal').modal('show');
+      $('#delete_ready_div').html('<div class="text-center mt-5 mb-5"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>');
 
-    <script>
-    function view_cat_modal(main_cat_id, parent) {
-        var data2send={'main_cat_id':main_cat_id, 'element':'table'};
-        $('#view_cat_modal').modal('show');  
-        $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
-        $.ajax({
-            url:"{{ route('category.sub_cat_ajax_fetch') }}",
-            dataType:"text",
-            method:"GET",
-            data:data2send,
-            success:function(resp){
-                $('#view_ready_div').html(resp);
-            }
-	    }); 
-    }
-    </script>
+      var data2send={'cat_id':cat_id};
+      $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+      $.ajax({
+          url:"{{ route('category.delete_category_ajax_fetch') }}",
+          dataType:"text",
+          method:"GET",
+          data:data2send,
+          success:function(resp){
+              $('#delete_ready_div').html(resp);
+          }
+    }); 
+  }
+ 
+
+  </script>
+  {{-- <x-datatables />    datatables js scripts --}}
+
+@endsection
+
 @endsection

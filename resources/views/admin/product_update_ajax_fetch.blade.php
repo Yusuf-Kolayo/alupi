@@ -1,3 +1,17 @@
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" style="display:inline;" id="exampleModalLabel"> Update Product</h5>
+          <button type="button" style="float:right;"  class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {!! Form::open(['route' => ['product.update', ['product'=>$product->product_id]], 'method'=>'POST', 'files' => true, 'id'=>'product_update_form', ]) !!} 
+          <div class="modal-body">
+
+
+
+
                 <div class="row "> @method('PATCH')
                       <div class="col-md-12 text-center pb-4">
                             <img src="{{asset('storage/uploads/products_img/'.$product->img_name)}}" alt="" class="img img-fluid" id="update_preview_img" style="height:200px;"/>
@@ -41,12 +55,23 @@
                       </div>
   
   
+
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label> Outright Price </label>
+                          <input type="number" name="outright_price" value="{{$product->outright_price}}" id="outright_price" class="form-control">
+                        </div>
+                    </div>
+
+
+
                       <div class="col-md-6">
                           <div class="form-group">
-                            <label> Price </label>
-                            <input type="number" name="price" value="{{$product->price}}" id="price" class="form-control">
+                            <label> Installment Price </label>
+                            <input type="number" name="install_price" value="{{$product->install_price}}" id="install_price" class="form-control">
                           </div>
                       </div>
+
    
   
                       <div class="col-md-6">
@@ -70,13 +95,23 @@
                             </select> 
                           </div>
                       </div> 
-                      
-  
-                   
-   
-  
+                       
                   </div>
             
+
+
+
+
+
+                      </div>
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button class="btn btn-primary" type="submit" name="update_product_btn" >Update</button>
+          </div>
+        {!! Form::close() !!} 
+      </div> 
+
+
 
 
 

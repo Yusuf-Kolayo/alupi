@@ -25,6 +25,12 @@ class Client extends Model
     }
 
 
+    public function has_agent () {  
+         if ($this->agent_id==null) {
+            return false;
+         } else  { return true; }       
+    }
+
     public function transaction () {
         return $this->hasMany('App\Models\Transaction', 'client_id', 'client_id');
     } 

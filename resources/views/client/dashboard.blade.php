@@ -4,9 +4,19 @@
  
 
   <div class="card">
-    <div class="card-header">Welcome to your Dashboard </div> 
-    <div class="card-body"> 
-        You are logged in!
+    <div class="card-header">Welcome to your Dashboard</div>
+    <div class="card-body">
+
+
+
+      @if (auth()->user()->client->product_purchase_session[0]->status=='pending')
+          <div class="alert alert-fill alert-danger alert-icon bg-danger mb-0">
+              <a href="{{route('client.my_profile')}}#details_card" style="text-decoration:none;"> 
+                 <i class="icon fas fa-exclamation-triangle"></i> You've got {{count(auth()->user()->client->product_purchase_session)}} purchase request pending approval, click here to view </a>
+          </div> 
+      @endif
+
+
     </div>
   </div>
 
@@ -28,7 +38,7 @@
               <div class="icon">
                 <i class="ion ion-android-cart"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('client.my_profile')}}#details_card" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -43,7 +53,7 @@
               <div class="icon">
                 <i class="ion ion-cash"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('client.my_profile')}}#details_card" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -58,7 +68,7 @@
               <div class="icon">
                 <i class="ion ion-android-options"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="JavaScript:void(0)" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->

@@ -23,12 +23,12 @@
                 <th>Position</th>
                 <th>Status</th>  
                 <th>Parent</th>  
-                <th></th>    <th></th>  
+                <th></th>    <th></th>  <th></th>  
               </tr>
               </thead>
              <tbody>
         {{-- loop out category here --}}
-        @php  $sn = 0;  @endphp
+          @php  $sn = 0;  @endphp
           @foreach ($sub_categories as $sub_category)
           @php  $sn ++;  @endphp
           <tr>
@@ -42,9 +42,11 @@
              <td> {{$sub_category->position}} </td> 
              <td> {{$sub_category->status}} </td>  
              <td> {{$sub_category->parent->cat_name}} </td>  
-  
+              <td>   
+                <button class="btn btn-primary btn-sm m-1" onClick="view_cat_modal('{{$sub_category->id}}', 'no')"> <em class="fas fa-eye"></em> View Sub-category </button>  
+              </td>
               <td>
-                  <a href="#" class="btn btn-primary btn-sm m-1" onClick="update_cat_modal('{{$sub_category->id}}', 'no')"> <em class="fas fa-edit"></em> Update</a>  
+                  <a href="JavaScript:void(0)" class="btn btn-primary btn-sm m-1" onClick="update_cat_modal('{{$sub_category->id}}', 'no')"> <em class="fas fa-edit"></em> Update</a>  
               </td> 
               <td>
                   <button class="btn btn-danger btn-sm m-1" onClick="delete_cat_modal('{{$sub_category->id}}', 'no')"> <em class="fas fa-trash"></em> Delete</button> </td>
@@ -55,7 +57,7 @@
               <tfoot>
               <tr>
               <th></th>    <th></th>    <th></th>    <th></th> 
-                  <th></th> 
+              <th></th>   <th></th>     <th></th>    <th></th>    <th></th> 
               <th></th>    <th></th>    <th></th>    <th></th> 
               </tr>
           </tfoot>

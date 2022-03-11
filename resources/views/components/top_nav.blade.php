@@ -3,7 +3,7 @@
     <!-- Left navbar links --> 
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        <a class="nav-link" data-widget="pushmenu" href="JavaScript:void(0)" role="button"><i class="fas fa-bars"></i></a>
       </li>
       
     </ul>
@@ -14,7 +14,7 @@
         
       <!-- Messages Dropdown Menu -->
       <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#" style="padding: .2rem 1rem;">
+        <a class="nav-link" data-toggle="dropdown" href="JavaScript:void(0)" style="padding: .2rem 1rem;">
             <div class="image" style="width:30px;">
                 <img src="{{ asset('images/avatar_dummy.png') }}" class="img-circle img-fluid" alt="User Image" style="border: 2px solid #2196f3; padding: 1px;"> 
             </div> 
@@ -32,15 +32,19 @@
                         
 
                         <li class="nav-item mt-2">  
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault();
-                                                 document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
+                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">  {{ __('Logout') }}
                                 </a>
+                          @if (auth()->user()->usr_type=='usr_client')
+                              <form id="logout-form" action="{{ route('shop_sign_out') }}" method="POST" class="d-none">
+                                @csrf
+                              </form> 
+                          @else
+                              <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                              </form> 
+                          @endif
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form> 
                         </li>
                        
                     </ul>
@@ -53,7 +57,7 @@
       <!-- Notifications Dropdown Menu -->
   
       <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
+        <a class="nav-link" data-toggle="dropdown" href="JavaScript:void(0)">
           <i class="far fa-bell"></i>
           @if (count($new_notifications)>0)
             <span class="badge badge-warning navbar-badge">{{count($new_notifications)}}</span>
@@ -74,12 +78,12 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+        <a class="nav-link" data-widget="fullscreen" href="JavaScript:void(0)" role="button">
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="JavaScript:void(0)" role="button">
           <i class="fas fa-th-large"></i>
         </a>
       </li>

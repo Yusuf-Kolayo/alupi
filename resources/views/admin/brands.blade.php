@@ -89,20 +89,14 @@
                <td> {{$brand->description}} </td>   
                <td> {{$brand->position}} </td>   
                 <td>
-                    <a href="#" class="btn btn-primary btn-sm m-1" onClick="update_cat_modal('{{$brand->id}}', 'no')"> <em class="fas fa-edit"></em> Update</a>  
+                    <a href="JavaScript:void(0)" class="btn btn-primary btn-sm m-1" onClick="update_brand_modal('{{$brand->id}}', 'no')"> <em class="fas fa-edit"></em> Update</a>  
                 </td> 
                 <td>
-                    <button class="btn btn-danger btn-sm m-1" onClick="delete_cat_modal('{{$brand->id}}', 'no')"> <em class="fas fa-trash"></em> Delete</button> </td>
+                    <button class="btn btn-danger btn-sm m-1" onClick="delete_brand_modal('{{$brand->id}}', 'no')"> <em class="fas fa-trash"></em> Delete</button> </td>
                 </td> 
               </tr>
            @endforeach
-                </tbody>
-                <tfoot>
-                <tr>
-                     <th></th>  <th></th>  <th></th>  <th></th> 
-                     <th></th>  <th></th>  <th></th>  
-                </tr>
-                </tfoot>
+                </tbody> 
               </table>
 
 
@@ -112,7 +106,82 @@
 
 
 
-  <x-datatables />    {{-- datatables js scripts --}}
+
+
+
+
+
+
+
+
+    {{-- UPDATE MODAL  --}} 
+    <div class="modal fade" id="update_brand_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog medium_modal" style="" role="document" id="update_ready_div">
+    
+         <div class="text-center"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>  
+    
+      </div>
+    </div> 
+
+
+
+    {{-- DELETE MODAL  --}} 
+    <div class="modal fade" id="delete_brand_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog medium_modal" style="" role="document" id="delete_ready_div">
+    
+         <div class="text-center"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>  
+    
+      </div>
+    </div> 
+
+
+
+
+
+      
+
+ @section('page_scripts')
+ <script>
+    function update_brand_modal(brand_id) { 
+        $('#update_ready_div').html('<div class="text-center"> <img src=" {{ asset('images/preloader1.gif') }} " class="img mx-auto" alt=""> </div>');
+        $('#update_brand_modal').modal('show');
+        $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+
+        $.ajax({
+        type:'POST',
+        url:"{{ route('update_brand_fetch') }}",
+        data: {'brand_id':brand_id},
+    
+            success:function(data) {
+            $('.verify').show();
+            $('#update_ready_div').html(data);  
+            }
+        }); 
+    }
+
+
+
+
+    function delete_brand_modal(brand_id) { 
+        $('#delete_ready_div').html('<div class="text-center"> <img src=" {{ asset('images/preloader1.gif') }} " class="img mx-auto" alt=""> </div>');
+        $('#delete_brand_modal').modal('show');
+        $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+
+        $.ajax({
+        type:'POST',
+        url:"{{ route('delete_brand_fetch') }}",
+        data: {'brand_id':brand_id},
+    
+            success:function(data) {
+            $('.verify').show();
+            $('#delete_ready_div').html(data);  
+            }
+        }); 
+    }
+  </script>
+     <x-datatables />    {{-- datatables js scripts --}}
+ @endsection
+
 
 
 @endsection

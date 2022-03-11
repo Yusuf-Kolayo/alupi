@@ -1,54 +1,21 @@
 
 <!-- UPDATE BANNER MODAL -->
 @admin
+  <!-- UPDATE BANNER MODAL -->
   <div class="modal fade" id="update_product_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="" role="document">
-
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" style="display:inline;" id="exampleModalLabel"> Update Product</h5>
-          <button type="button" style="float:right;"  class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        {!! Form::open(['route' => ['product.update', ['product'=>$product->product_id]], 'method'=>'POST', 'files' => true, 'id'=>'product_update_form', ]) !!} 
-          <div class="modal-body" id="update_ready_div">
-            <div class="text-center"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>   
-          </div>
-          <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button class="btn btn-primary" type="submit" name="update_product_btn" >Update</button>
-          </div>
-        {!! Form::close() !!} 
-      </div> 
+    <div class="modal-dialog" style="" role="document" id="update_ready_div">
+      <div class="text-center"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>   
     </div>
   </div>
+
+
 
   <!-- DELETE BANNER MODAL -->
   <div class="modal fade" id="delete_product_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="" role="document">
-
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" style="display:inline;" id="exampleModalLabel"> Are you sure to delete this product ?</h5>
-          <button type="button" style="float:right;"  class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        {!! Form::open(['route' => ['product.destroy', ['product'=>$product->product_id]], 'method'=>'POST', 'files' => true, 'id'=>'product_delete_form', ]) !!} 
-        @method('DELETE')
-        <div class="modal-body" id="delete_ready_div">
-            <div class="text-center"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div>   
-          </div>
-          <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button class="btn btn-danger" type="submit" name="delete_product_btn" >Delete</button>
-          </div>
-        {!! Form::close() !!} 
-      </div> 
+    <div class="modal-dialog" style="" role="document" id="delete_ready_div">
+         <div class="text-center"> <img src="{{asset('images/preloader1.gif')}}" class="img mx-auto" alt=""> </div> 
     </div>
   </div>
-
 
 
 
@@ -159,6 +126,8 @@
  
 
 <script>  
+
+        
 @admin
    
 
@@ -244,26 +213,6 @@
 
 
 
-      // SELECT PRODUCT MODAL
-      function select_product_modal(product_id) {
-        $('#select_ready_div').html('<div class="text-center"> <img src=" {{ asset('images/preloader1.gif') }} " class="img mx-auto" alt=""> </div>');
-        $('#select_product_modal').modal('show');
-        $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
-          
-          $.ajax({
-          type:'GET',
-          url:"{{ route('product.show_details_ajax_fetch') }}",
-          data: {"product_id":product_id },
-
-              success:function(data) {
-              $('.verify').show();
-              $('#select_ready_div').html(data);  
-            }
-          }); 
-      }
-
-
-
     // SOME FREE GAP HERE PLS 
     
 
@@ -299,8 +248,9 @@
                 method:"POST",
                 data:data2send,
                 success:function(resp) {
-                    // var new_price = resp.new_price;     
-                    $('.NPP').html(JSON.parse(resp).new_price);  
+                    var prices = JSON.parse(resp).prices;
+                    var price_update_html = JSON.parse(resp).price_update_html;    console.log(price_update_html); 
+                    $('#price_1').html(price_update_html);  
                 }
             }); 
         }
@@ -328,4 +278,26 @@
             }); 
         }
     @endvendor
+
+
+
+    @agent
+                // SELECT PRODUCT MODAL
+      function select_product_modal(product_id) {
+        $('#select_ready_div').html('<div class="text-center"> <img src=" {{ asset('images/preloader1.gif') }} " class="img mx-auto" alt=""> </div>');
+        $('#select_product_modal').modal('show');
+        $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+          
+          $.ajax({
+          type:'GET',
+          url:"{{ route('product.show_details_ajax_fetch') }}",
+          data: {"product_id":product_id },
+
+              success:function(data) {
+              $('.verify').show();
+              $('#select_ready_div').html(data);  
+            }
+          }); 
+      }
+    @endagent
 </script>

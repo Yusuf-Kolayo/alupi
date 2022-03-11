@@ -93,7 +93,7 @@
                   @php $last_trans_id = $product_purchase_session->transaction->last()->trans_id @endphp
                     <tr> 
                       <td colspan="7">Transactions on session: <b>{{$product_purchase_session->pps_id}} </b> </td>
-                      <td colspan="3"> <a href="#" onclick="select_trans_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs btn-block">Session Details</a> </td> 
+                      <td colspan="3"> <a href="JavaScript:void(0)" onclick="select_trans_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs btn-block">Session Details</a> </td> 
                     </tr> 
                     @foreach($product_purchase_session->transaction->sortKeysDesc() as $transaction)
                       @if (count($transaction)>0) 
@@ -109,12 +109,12 @@
                             <td> {{$transaction->created_at}} </td>   
                             <td> 
                                 @if ($allow_edit===true) 
-                                  <a href="#" onclick="trans_edit_modal('{{$transaction->trans_id}}')" class="btn btn-primary btn-xs btn-block"> <span class="fas fa-edit"></span> Update</a>  
+                                  <a href="JavaScript:void(0)" onclick="trans_edit_modal('{{$transaction->trans_id}}')" class="btn btn-primary btn-xs btn-block"> <span class="fas fa-edit"></span> Update</a>  
                                 @endif
                             </td>
                             <td>
                                 @if ($allow_edit===true) 
-                                <a href="#" onclick="trans_delete_modal('{{$transaction->trans_id}}')" class="btn btn-danger btn-xs btn-block"> <span class="fas fa-trash"></span> Delete</a> 
+                                <a href="JavaScript:void(0)" onclick="trans_delete_modal('{{$transaction->trans_id}}')" class="btn btn-danger btn-xs btn-block"> <span class="fas fa-trash"></span> Delete</a> 
                                 @endif
                             </td>
                         </tr>
@@ -155,7 +155,7 @@
                   @foreach($client->product_purchase_session as $product_purchase_session) 
                     @if (count($product_purchase_session->transaction)>0) 
                     @php
-                      $percentage_bal =  round(($product_purchase_session->transaction->last()->new_bal/$product_purchase_session->product->price)*100, 1)
+                      $percentage_bal =  round(($product_purchase_session->transaction->last()->new_bal/$product_purchase_session->product->install_price)*100, 1)
                     @endphp
                     @else
                       @php $percentage_bal=0; @endphp
@@ -164,7 +164,7 @@
                     <td> {{$product_purchase_session->pps_id}} </td>
                     <td> {{$product_purchase_session->status}} </td>
                     <td> {{$product_purchase_session->product->prd_name}} </td>
-                    <td> {{$product_purchase_session->product->price}} </td>
+                    <td> {{$product_purchase_session->product->install_price}} </td>
                     <td>  
                         @if ($product_purchase_session->transaction->last())
                         {{ $product_purchase_session->transaction->last()->new_bal }}
@@ -174,8 +174,8 @@
                     </td>
                     <td> {{$percentage_bal}}% </td>  
                     <td> {{$product_purchase_session->created_at}} </td>  
-                    <td> <a href="#" onclick="select_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs">product details</a> </td>  
-                    <td> <a href="#" onclick="delete_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-danger btn-xs">Delete Session</a> </td>   
+                    <td> <a href="JavaScript:void(0)" onclick="select_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs">product details</a> </td>  
+                    <td> <a href="JavaScript:void(0)" onclick="delete_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-danger btn-xs">Delete Session</a> </td>   
                   </tr>
                   @endforeach
                 </tbody> 
@@ -221,7 +221,7 @@
                         <table class="table w-100">
                             <tr><td>Product ID</td>  <td><b>{{$product->product_id}}</b></td></tr>
                             <tr><td>Name</td>        <td><b>{{$product->prd_name}}</b></td></tr>
-                            <tr><td>Price</td>       <td><b>{{$product->price}}</b></td></tr>
+                            <tr><td>Price</td>       <td><b>{{$product->install_price}}</b></td></tr>
                             <tr><td>Description</td> <td><b>{{$product->description}}</b></td></tr>
                         </table>
                     </div>   

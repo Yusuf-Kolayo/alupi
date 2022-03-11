@@ -581,15 +581,7 @@
              </tr>
             @endforeach
               </tbody>
-              <tfoot>
-              <td>
-                <th></th>  <th></th>  <th></th>
-                <th></th>  <th></th> 
-                <th></th> <th></th>
-                <th></th> <th></th>
-                <th></th>  <th></th> 
-              </td>
-              </tfoot>
+              
             </table>
     
     

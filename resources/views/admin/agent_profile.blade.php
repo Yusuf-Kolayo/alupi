@@ -230,7 +230,7 @@
                             @php $last_trans_id = $product_purchase_session->transaction->last()->trans_id @endphp
                               <tr> 
                                 <td colspan="8">Transactions on session: <b>{{$product_purchase_session->pps_id}} </b> </td>
-                                <td colspan="3"> <a href="#" onclick="select_trans_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs btn-block">Session Details</a> </td> 
+                                <td colspan="3"> <a href="JavaScript:void(0)" onclick="select_trans_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs btn-block">Session Details</a> </td> 
                               </tr> 
                               @foreach($product_purchase_session->transaction->sortKeysDesc() as $transaction) 
                                   @php $allow_edit = false;  $tr_bg_class = '';
@@ -247,12 +247,12 @@
                                   <td> {{$transaction->created_at}} </td>   
                                   <td> 
                                       @if ($allow_edit===true) 
-                                        <a href="#" onclick="trans_edit_modal('{{$transaction->trans_id}}')" class="btn btn-primary btn-xs btn-block"> <span class="fas fa-edit"></span> Update</a>  
+                                        <a href="JavaScript:void(0)" onclick="trans_edit_modal('{{$transaction->trans_id}}')" class="btn btn-primary btn-xs btn-block"> <span class="fas fa-edit"></span> Update</a>  
                                       @endif
                                   </td>
                                   <td>
                                       @if ($allow_edit===true) 
-                                      <a href="#" onclick="trans_delete_modal('{{$transaction->trans_id}}')" class="btn btn-danger btn-xs btn-block"> <span class="fas fa-trash"></span> Delete</a> 
+                                      <a href="JavaScript:void(0)" onclick="trans_delete_modal('{{$transaction->trans_id}}')" class="btn btn-danger btn-xs btn-block"> <span class="fas fa-trash"></span> Delete</a> 
                                       @endif
                                   </td>
                               </tr>
@@ -292,7 +292,7 @@
                             @foreach($user->agent->product_purchase_session as $product_purchase_session)
                             @if (count($product_purchase_session->transaction)>0) 
                                 @php
-                                  $percentage_bal =  round(($product_purchase_session->transaction->last()->new_bal/$product_purchase_session->product->price)*100, 1)
+                                  $percentage_bal =  round(($product_purchase_session->transaction->last()->new_bal/$product_purchase_session->product->install_price)*100, 1)
                                 @endphp
                             @else
                                 @php $percentage_bal=0; @endphp
@@ -301,7 +301,7 @@
                               <td> {{$product_purchase_session->pps_id}} </td>
                               <td> {{$product_purchase_session->status}} </td>
                               <td> {{$product_purchase_session->product->prd_name}} </td>
-                              <td> {{$product_purchase_session->product->price}} </td>
+                              <td> {{$product_purchase_session->product->install_price}} </td>
                               <td>  
                                   @if ($product_purchase_session->transaction->last())
                                   {{ $product_purchase_session->transaction->last()->new_bal }}
@@ -311,8 +311,8 @@
                               </td>
                               <td> {{$percentage_bal}}% </td>  
                               <td> {{$product_purchase_session->created_at}} </td>  
-                              <td> <a href="#" onclick="select_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs">product details</a> </td>  
-                              <td> <a href="#" onclick="delete_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-danger btn-xs">Delete Session</a> </td>   
+                              <td> <a href="JavaScript:void(0)" onclick="select_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs">product details</a> </td>  
+                              <td> <a href="JavaScript:void(0)" onclick="delete_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-danger btn-xs">Delete Session</a> </td>   
                             </tr>
                             @endforeach
                           </tbody> 
@@ -959,21 +959,21 @@ function copyToClipboard(elem) {
                         <fieldset class="form-input">
                             <h4>Your guarantor data</h4>
                             {{--START=> Your guarantor data --}}
-                    <div class="row">
+                             <div class="row">
                 
+                                  <div class="col-md-6">
+                                      <div class="form-group">
+                                        <label for="grt_first_name"> {{__('First Name')}}  </label>
+                                        <input required value="{{$user->agent->grt_first_name}}" type="text" class="form-control" id="grt_first_name" name="grt_first_name" >
+                                      </div>
+                                  </div> 
+                  
                                 <div class="col-md-6">
-                                    <div class="form-group">
-                                      <label for="grt_first_name"> {{__('First Name')}}  </label>
-                                      <input required value="{{$user->agent->grt_first_name}}" type="text" class="form-control" id="grt_first_name" name="grt_first_name" >
-                                    </div>
-                                </div> 
-                
-                              <div class="col-md-6">
-                                    <div class="form-group">
-                                      <label for="grt_last_name"> {{__('Last Name')}}  </label>
-                                      <input required value="{{$user->agent->grt_last_name}}" type="text" class="form-control" id="grt_last_name" name="grt_last_name" >
-                                    </div>
-                                </div> 
+                                      <div class="form-group">
+                                        <label for="grt_last_name"> {{__('Last Name')}}  </label>
+                                        <input required value="{{$user->agent->grt_last_name}}" type="text" class="form-control" id="grt_last_name" name="grt_last_name" >
+                                      </div>
+                                  </div> 
                 
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -1065,45 +1065,45 @@ function copyToClipboard(elem) {
                                     </div>
                                 </div>
                 
-                
-                          <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="grt_bis_name"> {{__('Business/Company Name')}}  </label>
-                                <input required value="{{$user->agent->grt_bis_name}}" type="text" class="form-control" id="grt_bis_name" name="grt_bis_name">
-                                </div>
-                          </div>
-                
-                
-                          <div class="col-md-6">
-                              <div class="form-group">
-                                <label for="grt_bis_address"> {{__('Business Address')}}  </label>
-                                <input required value="{{$user->agent->grt_bis_address}}" type="text" class="form-control" id="grt_bis_address" name="grt_bis_address">
-                              </div>
-                          </div>
-                
-                      <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="grt_relationship"> {{__('Relationship with Agent')}}  </label>
-                            <input required type="text" value="{{$user->agent->grt_relationship}}" class="form-control" id="grt_relationship" name="grt_relationship">
-                        </div>
-                        </div>
+                          
+                                    <div class="col-md-6">
+                                      <div class="form-group">
+                                          <label for="grt_bis_name"> {{__('Business/Company Name')}}  </label>
+                                          <input required value="{{$user->agent->grt_bis_name}}" type="text" class="form-control" id="grt_bis_name" name="grt_bis_name">
+                                          </div>
+                                    </div>
+                          
+                          
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                          <label for="grt_bis_address"> {{__('Business Address')}}  </label>
+                                          <input required value="{{$user->agent->grt_bis_address}}" type="text" class="form-control" id="grt_bis_address" name="grt_bis_address">
+                                        </div>
+                                    </div>
+                          
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                      <label for="grt_relationship"> {{__('Relationship with Agent')}}  </label>
+                                      <input required type="text" value="{{$user->agent->grt_relationship}}" class="form-control" id="grt_relationship" name="grt_relationship">
+                                  </div>
+                                  </div>
 
 
-                        <div class="col-md-12">
-                          <div class="form-group">
-                              <label for="grt_undertaken"> {{__('Guarantor Undertake')}}  </label>
-                              <textarea required rows="5" class="form-control" id="grt_undertaken" name="grt_undertaken">{{$user->agent->grt_undertaken}}</textarea>
-                        </div>
-                        </div>
-                
-  
-                
-                    </div>  
+                                  <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="grt_undertaken"> {{__('Guarantor Undertake')}}  </label>
+                                        <textarea required rows="5" class="form-control" id="grt_undertaken" name="grt_undertaken">{{$user->agent->grt_undertaken}}</textarea>
+                                  </div>
+                                  </div>
+                          
+            
+                          
+                              </div>  
                             {{--END=> Your guarantor data --}}
                         </fieldset>
                 
                         <h3>HR</h3>
-                        <fieldset class="form-input">
+                    <fieldset class="form-input">
                             <h4>HR Verification</h4>
                           {{--START=> HR Verification --}}
                           <div class="row"> 

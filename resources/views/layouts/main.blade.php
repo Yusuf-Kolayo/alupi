@@ -19,8 +19,9 @@
   
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-      <!-- Font Awesome -->
+      <!-- Font Awesome --> 
   <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
+  {{-- <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/fontawesome.min.css') }}"> --}}
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Tempusdominus Bootstrap 4 -->
@@ -80,37 +81,47 @@
 .fade_hd_blue { background-color: #d7e9ff!important; }
 .fade_bd_blue { background-color: #f0f4ff!important; }
 .card-body { padding: .5rem; }
-.note_each {
-    font-size: 14px;
-    white-space: inherit;
-    display: inline-block;
-}  .price { color: #007bff; }
+.note_each { font-size: 14px; white-space: inherit; display: inline-block; }  
+.zoomin img { width: 100%; height: 100% -webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -ms-transition: all 0.5s ease; transition: all 0.5s ease; }
+.zoomin img:hover { -moz-transform: scale(1.5); -webkit-transform: scale(1.5); transform: scale(1.5); }
+.price { color: #007bff; }  .frame { width: 100%; height: 100%;  overflow: hidden; }
 .short_msg { white-space: break-spaces; margin-bottom: 2px; }
-
+.alert.alert-icon > .icon { position: initial; }  
+._select {margin: 0px ; padding: 5px ; padding-left: 10px ;  width: 100%; border: 1px solid; border-radius: 5px ; }
+div>h6>a { text-transform: capitalize; } .preloader1 { width: 10%; }
   @media (min-width: 576px) {
     .large_modal { max-width:90%!important; } 
     .medium_modal { max-width:70%!important; }
   }
   </style>
 
+   
+  @yield('headers') 
+  @client 
+      <style>
+           [class*=sidebar-dark-] { background-color: #15161D; }
+      </style>
+  @endclient
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper" id="main">
 
 
- @php
-//  FETCH MAIN CATEGORIES HERE DUE TO COMMON INTEREST AMONG THE USER TYPES
- $main_categories = App\Models\Category::where('parent_id', 0)->get();
+  @php
+    //  FETCH MAIN CATEGORIES HERE DUE TO COMMON INTEREST AMONG THE USER TYPES
+    $main_categories = App\Models\Category::where('parent_id', 0)->get();
 
- // fetch newly sent notifications belonging to current user
- $new_notifications = App\Models\Notification::where('receiver_id', auth()->user()->user_id)->latest()
- ->where('status', 'sent')->get();
+    // fetch newly sent notifications belonging to current user
+    $new_notifications = App\Models\Notification::where('receiver_id', auth()->user()->user_id)->latest()
+    ->where('status', 'sent')->get();
 
- $notification_icon_array = array( 
-   'new_purchase_reg' => 'fas fa-shopping-cart',
-   'purchase_session_approved' => 'fas fa-legal',
-);
- @endphp
+    $notification_icon_array = array( 
+      'new_purchase_reg' => 'fas fa-shopping-cart',
+      'purchase_session_approved' => 'fas fa-legal',
+        'new_client_web_reg' => 'ion ion-person-add',
+        'new_client_agt_reg' => 'ion ion-person-add',
+    );
+  @endphp
 
 
   @include('components.top_nav') 
@@ -152,13 +163,16 @@
         </div>
         <!-- /.content-header --> 
       </div>
-</main>
+  </main>
+  
 
 
   <!-- /.content-wrapper -->
   @include('components.footer')
 
+  @yield('page_scripts') 
 
+  
   @if (auth()->user())
  <script>
  $(document).ready(function() { 
@@ -174,7 +188,7 @@
                 $.ajax({
                     url:"{{route('fetch_chat')}}",
                     dataType:"text",
-                    method:"GET",
+                    method:"POST",
                     data:data2send,
                     success:function(resp) { 
                     if ($('#msg_body').length > 0) {  

@@ -62,7 +62,7 @@ class VendorController extends BaseController
             'address' => ['nullable', 'string', 'max:100'],
             'phone_a' => ['required', 'string', 'max:22', 'unique:vendors'],
             'phone_b' => ['required', 'string', 'max:22', 'unique:vendors'],
-            'email' => ['required', 'string', 'email', 'max:200', 'unique:users'],
+            'email'   => ['required', 'string', 'email', 'max:200', 'unique:users'],
             'username' => ['required', 'string', 'max:55', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'same:confirm_password'],
             'confirm_password' => ['required', 'string', 'min:6']
@@ -142,11 +142,15 @@ class VendorController extends BaseController
         $vendor_id = $vendor_price->vendor_id;   
         $product = Product::where('product_id', $product_id)->first();
      
-        $new_price = ((20/100) * $base_price) + $base_price; 
+        $outright_price = $vendor_price->outright_price_vnd(); 
+        $install_price = $vendor_price->install_price_vnd(); 
+        
+            //   $outright_price = 75000;
+            //  $install_price = 98000;  
 
         if(Product::where('product_id', $product_id)
-        ->update(['price' => $new_price])>0) {  // if update successfull
-
+        ->update(['outright_price' => $outright_price, 'install_price' => $install_price,])>0) {  // if update successfull
+    
             $vendor = Vendor::where('vendor_id', $vendor_id)->first();
     
             // save user activity
@@ -158,9 +162,15 @@ class VendorController extends BaseController
                 'type' => $type,
                 'activity' => $activity_msg
             ]);
-     
-             $new_price = Product::where('product_id', $product_id)->value('price');    
-             return response()->json(['new_price'=> number_format($new_price),'status'=>1]);
+            
+             $outright_price = Product::where('product_id', $product_id)->value('outright_price');
+             $install_price = Product::where('product_id', $product_id)->value('install_price');  
+
+
+             $prices = [number_format($outright_price), number_format($install_price)];
+             $price_update_html = ' <p class="mb-1 text-center"> <i class="fa fa-flash"></i> Outright Price: <b class="NPP price">'.number_format($outright_price).'</b> </p>
+             <p class="mb-0 text-center"> <i class="fa fa-list"></i> Installment Price: <b class="NPP price">'.number_format($install_price).'</b> </p>';
+             return response()->json(['prices'=> $prices,'price_update_html'=>$price_update_html,'status'=>1]);
         }
         
     }

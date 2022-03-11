@@ -44,8 +44,9 @@
 
           
           <div class="card card-primary"> 
-            <div class="card-body">
-            <p class="mb-0 text-center"> <i class="fas fa-flash"></i> Main Price: <b class="NPP price">{{number_format($product->price)}}</b></p>
+            <div class="card-body" id="price_1">
+              <p class="mb-1 text-center"> <i class="fa fa-flash"></i> Outright Price: <b class="NPP price">{{number_format($product->outright_price)}}</b> </p>
+              <p class="mb-0 text-center"> <i class="fa fa-list"></i> Installment Price: <b class="NPP price">{{number_format($product->install_price)}}</b> </p>
             </div> 
           </div>
           <!-- /.card -->
@@ -76,7 +77,8 @@
                       <table class="table w-100">
                           <tr><td>Product ID</td>  <td><b>{{$product->product_id}}</b></td></tr>
                           <tr><td>Name</td>        <td><b>{{$product->prd_name}}</b></td></tr>
-                          <tr><td>Price</td>       <td><b class="NPP"> {{number_format($product->price)}} </b></td></tr>
+                          <tr><td>Installment Pay</td>       <td><b class="NIP"> {{number_format($product->install_price)}} </b></td></tr>
+                          <tr><td>Outright Pay</td>          <td><b class="NOP"> {{number_format($product->outright_price)}} </b></td></tr>
                           <tr><td>Description</td> <td>{!!$product->description!!}</td></tr>
                       </table> 
                  </div> 
@@ -92,7 +94,7 @@
 
                           <th>SN</th>
                           <th>Vendor</th>
-                          <th>Base Price</th>    <th>Final Price</th>   
+                          <th>Base Price</th>    <th>Outright Price</th>    <th>Installment Price</th>   
                           <th></th>   
                         </tr>
                         </thead>
@@ -100,11 +102,11 @@
                    
                           @php $sn=0; @endphp
                           @foreach($product->vendor_price as $vendor_price)  
-                            @php $sn++;      $new_price = ((20/100) * $vendor_price->price) + $vendor_price->price;   @endphp
+                            @php $sn++;      $outright_price =  $vendor_price->outright_price_vnd();     $install_price = $vendor_price->install_price_vnd();   @endphp
                             <tr class="">
                                 <td> {{$sn}} </td>
                                 <td> {{$vendor_price->vendor->full_name}} </td>
-                                <td> {{$vendor_price->price}} </td>         <td> {{$new_price}} </td>     
+                                <td> {{number_format($vendor_price->price)}} </td>         <td> {{number_format($outright_price)}} </td>    <td> {{number_format($install_price)}} </td>     
                                 <td> <button class="btn btn-primary btn-sm btn-block" onclick="pick_vendor_price('{{$vendor_price->product_id}}','{{$vendor_price->id}}')">Assign Price</button> </td>                                       
                             </tr>
                           @endforeach
@@ -140,7 +142,7 @@
                         @foreach($product->product_purchase_session as $product_purchase_session)
                         @if (count($product_purchase_session->transaction)>0) 
                             @php
-                              $percentage_bal =  round(($product_purchase_session->transaction->last()->new_bal/$product_purchase_session->product->price)*100, 1)
+                              $percentage_bal =  round(($product_purchase_session->transaction->last()->new_bal/$product_purchase_session->product->install_price)*100, 1)
                             @endphp
                         @else
                             @php $percentage_bal=0; @endphp
@@ -149,7 +151,7 @@
                           <td> {{$product_purchase_session->pps_id}} </td>
                           <td> {{$product_purchase_session->status}} </td>
                           <td> {{$product_purchase_session->product->prd_name}} </td>
-                          <td> {{$product_purchase_session->product->price}} </td>
+                          <td> {{$product_purchase_session->product->install_price}} </td>
                           <td>  
                               @if ($product_purchase_session->transaction->last())
                               {{ $product_purchase_session->transaction->last()->new_bal }}
@@ -159,8 +161,8 @@
                           </td>
                           <td> {{$percentage_bal}}% </td>  
                           <td> {{$product_purchase_session->created_at}} </td>  
-                          <td> <a href="#" onclick="select_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs">product details</a> </td>  
-                          <td> <a href="#" onclick="delete_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-danger btn-xs">Delete Session</a> </td>   
+                          <td> <a href="JavaScript:void(0)" onclick="select_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs">product details</a> </td>  
+                          <td> <a href="JavaScript:void(0)" onclick="delete_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-danger btn-xs">Delete Session</a> </td>   
                         </tr>
                         @endforeach
                       </tbody> 
@@ -219,7 +221,7 @@
                                                     @if ($product->vendor_price()->where('vendor_prices.vendor_id', auth()->user()->user_id)->value('price'))
                                                        {{number_format($product->vendor_price()->where('vendor_prices.vendor_id', auth()->user()->user_id)->value('price'))}}
                                                     @else
-                                                    {{number_format($product->price)}}
+                                                    {{number_format($product->install_price)}}
                                                     @endif </b>
                                                     </p>
                                                 </td></tr>
