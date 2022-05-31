@@ -328,10 +328,8 @@ class BaseController extends Controller
           <a href="'.route('chat_board', ['chat_patner'=>[]]).'" class="dropdown-item dropdown-footer">See All Messages<\/a>
         <\/div>';
 
-      // dd($topnav_msg);
-
-
-
+   
+ 
           return response()->json(['chatboard_msg'=>$chatboard_msg, 'topnav_msg'=>$topnav_msg, 'active_time'=>$active_time]);
         // return view('chat_box_ajax_fetch', compact('messages'));
     }

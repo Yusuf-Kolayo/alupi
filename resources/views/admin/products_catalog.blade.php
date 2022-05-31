@@ -209,12 +209,13 @@
               <div class="col-12">
                 <div>
             <ul class="pagination pagination-sm">
-                @php
+               
+                @php // dd($products->currentPage());
                 if ($products->currentPage()==1) {
-                    if ($products->hasMore==true) { $prev_class= 'disabled'; $next_class= ''; $prev_onclick=''; $next_onclick='fetch_next('.$products->currentPage().')'; } 
-                                             else { $prev_class= ''; $next_class= 'disabled'; $prev_onclick='fetch_prev('.$products->currentPage().')'; $next_onclick='';  }  
+                    if ($products->hasMorePages()==true) { $prev_class= 'disabled'; $next_class= ''; $prev_onclick=''; $next_onclick='fetch_next('.$products->currentPage().')'; } 
+                                             else { $prev_class= 'disabled'; $next_class= 'disabled'; $prev_onclick='fetch_prev('.$products->currentPage().')'; $next_onclick='';  }  
                 } else {  //current page more > 1
-                    if ($products->hasMore==true) { $prev_class= ''; $next_class= ''; $prev_onclick='fetch_prev('.$products->currentPage().')'; $next_onclick='fetch_next('.$products->currentPage().')'; } 
+                    if ($products->hasMorePages()==true) { $prev_class= ''; $next_class= ''; $prev_onclick='fetch_prev('.$products->currentPage().')'; $next_onclick='fetch_next('.$products->currentPage().')'; } 
                                              else { $prev_class= ''; $next_class= 'disabled'; $prev_onclick='fetch_prev('.$products->currentPage().')'; $next_onclick=''; }  
                 } 
                 @endphp

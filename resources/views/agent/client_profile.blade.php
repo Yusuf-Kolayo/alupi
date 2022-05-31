@@ -243,8 +243,28 @@
                   </div>
                   <!-- /.tab-content -->
                 </div><!-- /.card-body -->
+
+              
               </div>
               <!-- /.card -->
+
+
+               @client
+                <div class="mt-3 card">
+                  <div class="card-header p-2"> 
+                    <p class="mb-0 ml-2"><b>Bank Details</b></p>
+                  </div> 
+                  <div class="card-body p-3">
+                    <p>You can make your directly payments into the company Bank Account;</p>
+                      <ul>
+                        <li>Account: <b>4110108639</b></li>
+                        <li>Account Name: <b>ADROITLINK-UP INT'L</b></li>
+                        <li>Bank: <b>Providus Bank</b> <i>previously Skye Bank</i> </li>
+                      </ul>
+
+                  </div>
+                </div>
+               @endclient
             </div>
             <!-- /.col -->
           </div>

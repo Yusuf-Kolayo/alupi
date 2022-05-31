@@ -70,8 +70,7 @@
               <div class="tab-content">
 
 
-               
-
+                
 
                   <div class="active tab-pane table-responsive" id="details">  
                       <table class="table w-100">

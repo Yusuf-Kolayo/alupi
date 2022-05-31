@@ -33,7 +33,7 @@
 						<!-- SEARCH BAR -->
 						<div class="col-md-6">
 							<div class="header-search">
-								<form action="{{route('shop.shop_by_search')}}" method="get"> 
+								<form action="{{route('shop.shop_by_search')}}" method="get" autocomplete="off"> 
 									<input name="keyword" class="form-control" placeholder="Search products here">
 									<button class="d-none" type="submit">Search</button>
 								</form>
@@ -46,10 +46,17 @@
 							<div class="header-ctn">
 								<!-- Account -->
 								<div>
-									<a @guest href="{{route('register_login')}}" @endguest @client href="{{route('dashboard')}}" @endclient >
-										<i class="fa fa-user-o"></i>
-										<span>My Account</span> 
-									</a>
+									@guest
+										<a href="{{route('register_login')}}">
+											<i class="fa fa-user-o"></i>
+											<span>My Account</span> 
+										</a>
+									@else
+										<a href="{{route('dashboard')}}">
+											<i class="fa fa-user-o"></i>
+											<span>Dashboard</span> 
+										</a>
+									@endguest
 								</div>
 								<!-- /Account -->
  
