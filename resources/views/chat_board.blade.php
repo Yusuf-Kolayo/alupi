@@ -74,28 +74,36 @@
                       //       $fullname = $user[0]->client->first_name.' '.$user[0]->client->last_name;
                       //   } 
                   @endphp
-                <a href="{{route('chat_board', ['user_id'=>$user[0]->user_id])}}" class="dropdown-item px-1">   
-                    <!-- Message Start -->
-                    <div class="media">
-                      <img src="{{ asset('images/avatar_dummy.png') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                      <div class="media-body">
-                        <h3 class="dropdown-item-title">
-                          {{$user[0]->username}}  
-                        </h3>
+
+                    @if ($user[0])
+                        <a href="{{route('chat_board', ['user_id'=>$user[0]->user_id])}}" class="dropdown-item px-1">   
+                          <!-- Message Start -->
+                          <div class="media">
+                            <img src="{{ asset('images/avatar_dummy.png') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                            <div class="media-body">
+                              <h3 class="dropdown-item-title">
+                                {{$user[0]->username}}  
+                              </h3>
 
 
-                        @if ($user[1])
-                        <p class="text-sm short_msg">{{substr($user[1]->message,0,75)}} ...</p>
-                        <p class="text-sm text-muted mb-0"><i class="far fa-clock mr-1"></i>{{$user[1]->created_at}}</p>
-                        @else
-                        <p class="text-sm short_msg">---</p>
-                        @endif
+                              @if ($user[1])
+                              @php
+                                    if ($user[1]->msg_type=='raw_txt')  { $msg2 = substr($user[1]->message,0,30);  } 
+                                      else { $msg2 =  '<span class="fa fa-image" style="font-size: 20px;"></span>'; }
+                              @endphp
+                              <p class="text-sm short_msg">{!!$msg2!!} ...</p>
+                              <p class="text-sm text-muted mb-0"><i class="far fa-clock mr-1"></i>{{$user[1]->created_at}}</p>
+                              @else
+                              <p class="text-sm short_msg">---</p>
+                              @endif
 
-                      </div>
-                    </div>
-                    <!-- Message End -->
-                  </a>
-                  <div class="dropdown-divider"></div> 
+                            </div>
+                          </div>
+                          <!-- Message End -->
+                        </a>
+                        <div class="dropdown-divider"></div> 
+                    @endif
+               
                 @endforeach
 
   
@@ -150,9 +158,12 @@
                         <div class="contacts-list-info">
                         <span class="contacts-list-name">
                            {{$user[0]->username}}
-
+                           @php
+                           if ($user[1]->msg_type=='raw_txt')  { $msg2 = substr($user[1]->message,0,30);  } 
+                             else { $msg2 =  '<span class="fa fa-image" style="font-size: 20px;"></span>'; }
+                           @endphp
                            @if ($user[1])
-                           <small class="contacts-list-date float-right">{{substr($user[1]->message,0,75)}} ...</small>
+                           <small class="contacts-list-date float-right">{!!$msg2!!} ...</small>
                            @else
                            <small class="contacts-list-date float-right">---</small>
                            @endif
@@ -181,15 +192,38 @@
 <!-- /.card-body -->
 <div class="card-footer">
   @if ($chat_patner)
-  <form action="#" method="post" id="form_msg">
-    <div class="input-group">
-      <input type="text" name="message" placeholder="Type Message ..." class="form-control" id="txt_msg">
-      <input type="hidden" name="patner_id" value="{{$chat_patner->user_id}}" id="patner_id"> 
-      <span class="input-group-append">
-        <button type="submit" class="btn btn-outline-primary" id="btn_send">Send</button>
-      </span>
-    </div>
-  </form>
+      <div class="row">
+          <div class="col-10 p-0">
+            <form action="#" method="post" id="form_msg">
+              <div class="input-group">
+                <input type="text" name="message" placeholder="Type Message ..." class="form-control" id="txt_msg">
+                <input type="hidden" name="patner_id" value="{{$chat_patner->user_id}}" id="patner_id"> 
+                <span class="input-group-append">
+                  <button type="submit" class="btn btn-outline-primary" id="btn_send_msg">Send</button>
+                </span>
+              </div>
+            </form>
+
+            <form action="#" method="post" id="form_file" style="display: none;">
+              <div class="input-group">
+                <input type="file" name="file_msg" class="form-control" id="file_msg">
+                <input type="hidden" name="patner_id" value="{{$chat_patner->user_id}}" id="patner_id"> 
+                <span class="input-group-append">
+                  <button type="submit" class="btn btn-outline-primary" id="btn_send_file">Send</button>
+                </span>
+              </div>
+            </form>
+          </div>
+          <div class="col-2 pr-0">
+            <span class="input-group-append" id="btn_img">
+              <button type="submit" class="btn btn-secondary btn-block"> <span class="fa fa-image"></span> </button>
+            </span>
+            
+            <span class="input-group-append" id="btn_txt" style="display: none;">
+              <button type="submit" class="btn btn-secondary btn-block"> <span class="fa fa-comments"></span> </button>
+            </span>
+          </div>
+      </div>
   @else
     <p class="text-center">. . .</p>
     <input type="hidden" name="patner_id" value="" id="patner_id"> 
@@ -226,7 +260,7 @@
         $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
         $.ajax({
                 type: 'POST',
-                url: "{{route('post_chat')}}",
+                url: "{{route('post_msg')}}",
                 data: new FormData(this),
                 dataType: 'json',
                 contentType: false,
@@ -236,7 +270,36 @@
                 success: function(response){ //console.log(response); 
                    
                     if(response.status == 'sent'){
-                      console.warn(response.message);    fetch_chat();    
+                      console.warn(response.message);    fetch_chat();  
+                      var element = document.getElementById("msg_body");
+                        element.scrollTop = element.scrollHeight;     
+                    } else {  console.warn(response.message);  }  
+                }
+            });  
+
+    });
+
+
+
+
+    $('#form_file').on('submit', function(e){
+        e.preventDefault();   
+        $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+        $.ajax({
+                type: 'POST',
+                url: "{{route('post_file')}}",
+                data: new FormData(this),
+                dataType: 'json',
+                contentType: false,
+                cache: false,
+                processData:false,
+                beforeSend: function(){  $("#file_msg").val(null) },
+                success: function(response){ //console.log(response); 
+                   
+                    if(response.status == 'sent'){
+                      console.warn(response.message);    fetch_chat();  
+                       var element = document.getElementById("msg_body");
+                        element.scrollTop = element.scrollHeight;   
                     } else {  console.warn(response.message);  }  
                 }
             });  
@@ -244,7 +307,17 @@
     });
     
     
-   
+
+    $('#btn_img').click(function() {
+      $(this).hide();     $('#btn_txt').show();
+      $('#form_msg').hide();     $('#form_file').show();
+    });
+
+
+    $('#btn_txt').click(function() {
+      $(this).hide();     $('#btn_img').show();
+      $('#form_msg').show();     $('#form_file').hide();
+    });
     
 
  

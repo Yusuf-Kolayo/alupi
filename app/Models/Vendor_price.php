@@ -22,4 +22,14 @@ class Vendor_price extends Model
         return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
 
+    public function outright_price_vnd () {  
+        $var = ((15/100) * $this->price ) + $this->price;
+        return $var;
+    }
+
+    public function install_price_vnd () {  
+        $var = ((20/100) * $this->price ) + $this->price;
+        return $var;
+    }
+
 }

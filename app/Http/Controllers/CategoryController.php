@@ -24,8 +24,9 @@ class CategoryController extends BaseController
 
     public function index()
     { 
-        $main_categories = Category::where('parent_id', 0)->get(); 
-        return view('admin.categories')->with('main_categories',$main_categories);
+        $all_categories = Category::all();
+        $main_categories = Category::where('parent_id', 0)->get();
+        return view('admin.categories', compact('main_categories','all_categories'));
     }
 
 
@@ -39,23 +40,16 @@ class CategoryController extends BaseController
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+   
+    
     public function create()
     {  
         $main_categories = Category::where('parent_id', 0)->get(); 
         return view('admin.categories')->with('main_categories',$main_categories); 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+   
+    
     public function store(Request $request)
     {
         $data = request()->validate([
@@ -94,62 +88,85 @@ class CategoryController extends BaseController
     {
         $category = Category::findOrFail($id);
         return view('admin.category_profile')->with('category',$category);
+    } 
+   
+    
+         // fetch through ajax: a form to update category
+    public function edit_category_ajax_fetch (Request $request)
+    {  
+        $category_id = $request['cat_id'];
+
+        $category = Category::findOrFail($category_id);  //dd($category);
+        $main_categories = Category::where('parent_id', 0)->get(); 
+        return view('admin.category_edit_ajax_fetch', compact('category','main_categories'));
+
     }
 
-    public function trash($id)
-    {
-        $category = Category::findOrFail($id);
-        return view('admin.category_trash')->with('category',$category);
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
+        // fetch through ajax: a form to delete category
+        public function delete_category_ajax_fetch (Request $request)
+        {
+           
+            $category_id = $request['cat_id'];
+    
+            $category = Category::findOrFail($category_id);  //dd($category);
+            return view('admin.category_delete_ajax_fetch', compact('category'));
+    
+        }
+
+
+   
+     
+
+    // update a category data
     public function update(Request $request, $id)
-    {
-        
+    {  
+ 
         $data = request()->validate([
-            'category_name' => ['required', 'string', 'max:55', 'unique:categories,category_name,'. $id . 'id'],
-            'description' => ['required', 'string', 'max:100'],
-            'state' => ['required', 'string', 'max:22'],
-            'lga' => ['required', 'string', 'max:55']
+            'cat_name' => ['required', 'string', 'max:55', 'unique:categories,cat_name,'. $id . 'id'], 
+            'abbr' => ['required', 'string', 'max:3', 'unique:categories,abbr,'. $id . 'id'],
+            'description' => ['required', 'string', 'max:1000'],
+            'meta_title' => ['required', 'string', 'max:100'],  
+            'meta_desc' => ['required', 'string', 'max:1000'],  
+            'meta_keyword' => ['required', 'string', 'max:100'], 
+            'parent_id' => ['required', 'string', 'max:55'],
+            'position' => ['required', 'string', 'max:55']
+
         ]); 
 
          Category::where('id', $id)
          ->update([  
-            'category_name' => $data['category_name'],
-            'description' => $data['description'],
-            'state' => $data['state'],
-            'lga' => $data['lga']
+            'cat_name' => $data['cat_name'],
+            'abbr' => strtoupper($data['abbr']),
+            'description' => $data['description'], 
+            'meta_title' => $data['meta_title'],
+            'meta_desc' => $data['meta_desc'],
+            'meta_keyword' => $data['meta_keyword'],
+            'parent_id' => $data['parent_id'],
+            'position' => $data['position']
         ]); 
 
-        return redirect()->route('category.show', ['category'=>$id])->with('success', 'category updated Successfully.');
-
+        return redirect()->route('category.index')->with('success', 'category updated successfully');
+      
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+  
+    
+
+
+    // destroy a category from db
     public function destroy($id)
-    {
-        //
+    { 
+
+        $category = Category::where('id', $id)->firstOrFail(); 
+        if ($category) {
+            $deleted_rows = Category::where('id', $id)->delete();
+        }   
+
+
+        return redirect()->route('category.index')->with('success', 'category updated successfully');        
     }
+
 }

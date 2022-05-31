@@ -46,7 +46,7 @@
 
 
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="JavaScript:void(0)" class="nav-link">
             <i class="nav-icon fas fa-shopping-cart"></i>
             <p>
                Catalog
@@ -57,7 +57,7 @@
             <ul class="nav nav-treeview"> 
               @foreach ($main_categories as $main_category)
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="JavaScript:void(0)" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
                     {{$main_category->cat_name}}

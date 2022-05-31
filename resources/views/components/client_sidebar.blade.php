@@ -14,12 +14,12 @@
     <!-- SidebarSearch Form -->
     <div class="form-inline mt-2">
       <div class="input-group" data-widget="sidebar-search">
-        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+        {{-- <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
           <button class="btn btn-sidebar">
             <i class="fas fa-search fa-fw"></i>
           </button>
-        </div>
+        </div> --}}
       </div>
     </div>
 
@@ -40,48 +40,23 @@
 
           
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="{{route('shop.shop_default')}}" class="nav-link">
             <i class="nav-icon fas fa-shopping-cart"></i>
-            <p>
-               Catalog
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a> 
-      
-            <ul class="nav nav-treeview"> 
-              @foreach ($main_categories as $main_category)
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    {{$main_category->cat_name}}
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  @foreach ($main_category->children as $item)
-                  <li class="nav-item">
-                    <a href="{{route('product.sub',['sub_category_id'=>$item->id])}}" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p> {{$item->cat_name}}</p>
-                    </a>
-                  </li> 
-                  @endforeach 
-                </ul>
-              </li> 
-              @endforeach 
-            </ul> 
-        </li> 
+            <p> Catalog  </p>
+          </a>  
+        </li>    
 
         
 
 
-        <li class="nav-item">
-          <a href="{{ route('client.my_account_oficer', ['agent'=>auth()->user()->client->agent->agent_id]) }}" class="nav-link ">
-            <i class="nav-icon fas fa-user"></i>
-            <p> {{__('Account Officer')}} </p>
-          </a> 
-        </li>    
+      @if (auth()->user()->client->has_agent() == true)
+      <li class="nav-item">
+        <a href="{{ route('client.my_account_oficer', ['agent'=>auth()->user()->client->agent->agent_id]) }}" class="nav-link ">
+          <i class="nav-icon fas fa-user"></i>
+          <p> {{__('Account Officer')}} </p>
+        </a> 
+      </li>    
+      @endif
        
       </ul>
     </nav>

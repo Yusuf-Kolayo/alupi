@@ -9,7 +9,7 @@
   <!-- Sidebar -->
   <div class="sidebar">
 
-
+ 
     <!-- SidebarSearch Form -->
     <div class="form-inline mt-2">
       <div class="input-group" data-widget="sidebar-search">
@@ -25,14 +25,13 @@
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <!-- Add icons to the links using the .nav-icon class
-             with font-awesome or any other icon font library -->
+        <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
         <li class="nav-item">
           <a href="{{ route('dashboard') }}" class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p> {{__('Dashboard')}} </p>
-          </a> 
-        </li> 
+          </a>
+        </li>
         
         <li class="nav-header"> COMPANY </li>  
         
@@ -43,14 +42,29 @@
         <li class="nav-item">
           <a href="{{ route('agent.index') }}" class="nav-link">  <i class="nav-icon fa fa-android"></i> <p> Agents </p>   </a>
         </li>
-
+             
         <li class="nav-item">
           <a href="{{ route('vendor.index') }}" class="nav-link">  <i class="nav-icon fa fa-building-o"></i> <p> Vendors </p>   </a>
+        </li>   
+
+         <li class="nav-item">
+          <a href="JavaScript:void(0)" class="nav-link">  <i class="nav-icon fa fa-file-o"></i> <p> DOCs  <i class="right fas fa-angle-left"></i> </p>  </a>
+            <ul class="nav nav-treeview"> 
+              <li class="nav-item">
+                <a href="{{ route('purchase_invoice.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i> Purchase Invoice </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('sale_invoice.index')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i> Sales Invoice </a>
+              </li>
+            </ul>
+          
         </li>    
-    
+        
         <li class="nav-header"> PRODUCTS </li>   
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="JavaScript:void(0)" class="nav-link">
             <i class="nav-icon fas fa-shopping-cart"></i>
             <p>
                Catalog
@@ -62,7 +76,7 @@
           <ul class="nav nav-treeview"> 
             @foreach ($main_categories as $main_category)
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="JavaScript:void(0)" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>
                   {{$main_category->cat_name}}
@@ -70,12 +84,26 @@
                 </p>
               </a>
               <ul class="nav nav-treeview">
-                @foreach ($main_category->children as $item)
+                @foreach ($main_category->children as $child)
                 <li class="nav-item">
-                  <a href="{{route('product.sub',['sub_category_id'=>$item->id])}}" class="nav-link">
+                  <a href="{{route('product.sub',['sub_category_id'=>$child->id])}}" class="nav-link">
                     <i class="far fa-dot-circle nav-icon"></i>
-                    <p> {{$item->cat_name}}</p>
+                    <p> {{$child->cat_name}}</p>
                   </a>
+
+                        @if ($child->children)
+                            <ul class="nav">
+                              @foreach ($child->children as $item)
+                              <li class="nav-item">
+                                <a href="{{route('product.sub',['sub_category_id'=>$item->id])}}" class="nav-link">
+                                  <i class="far fa-dot-circle nav-icon"></i>
+                                  <p> {{$item->cat_name}}</p>
+                                </a>
+                              </li> 
+                              @endforeach 
+                            </ul>
+                        @endif
+
                 </li> 
                 @endforeach 
               </ul>

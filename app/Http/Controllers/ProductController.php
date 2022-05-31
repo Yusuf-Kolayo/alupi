@@ -20,7 +20,9 @@ class ProductController extends BaseController
      * @return \Illuminate\Http\Response
      */
 
-       
+    public $w = 1098;    public $h = 717;   // set the width & height formats for product pics
+
+
 
       public function __construct() {
         $this->middleware('auth');
@@ -60,7 +62,8 @@ class ProductController extends BaseController
             'prd_name' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:100000'],
             'brand_id' => ['required', 'string', 'max:55'],
-            'price' => ['required', 'string', 'max:55'],
+            'outright_price' => ['required', 'string', 'max:55'],
+            'install_price' => ['required', 'string', 'max:55'],
             'main_category_id' => ['required', 'string', 'max:55'],
             'sub_category_id' => ['required', 'string', 'max:55']
         ]); 
@@ -73,9 +76,9 @@ class ProductController extends BaseController
         $product_id = "$brand_abbr-$sub_cat_abbr-$next_id";
    
         
-        $file = $request->file('img_name');  $random_string = Str::random(20); 
-        $ogImage = Image::make($file);
-        $originalPath = 'app/public/uploads/products_img/'; 
+        $file = $request->file('img_name');    $w=717; $h=717;
+        $ogImage = Image::make($file)->resizeCanvas($this->w, $this->h, 'center', false, 'ffffff');
+        $originalPath = 'app/public/uploads/products_img/';  $random_string = Str::random(20);
         $filename = time().'-'. $random_string .'.'. $file->getClientOriginalExtension();
         $ogImage =  $ogImage->save(storage_path($originalPath.$filename));
  
@@ -86,7 +89,8 @@ class ProductController extends BaseController
             'description' => $data['description'], 
             'img_name' => $filename,
             'brand_id' => $data['brand_id'],
-            'price' => $data['price'],
+            'outright_price' => $data['outright_price'],
+            'install_price' => $data['install_price'],
             'main_category_id' => $data['main_category_id'],
             'sub_category_id' => $data['sub_category_id']
         ]); 
@@ -114,6 +118,25 @@ class ProductController extends BaseController
     }
 
     
+
+        // fetch product by brand for catalog
+        public function fetch_product_by_brand (Request $request)
+        {   
+            // if (!in_array($this->title, parent::app_sections_only())) {    
+            //     return redirect()->route('access_denied'); 
+            // }
+    
+            // if (auth()->user()->usr_type=='usr_admin') {
+            //     if (!in_array(__FUNCTION__, parent::middleware_except())) {
+            //         return redirect()->route('access_denied'); 
+            //     }  
+            // }   
+            $brand_id = (int) $request['brand_id'];     $cat_id = $request['cat_id'];  // dd($request['cat_id']);
+            $products = ($brand_id==0) ? Product::where(['sub_category_id'=> $cat_id])->simplePaginate(12) : Product::where(['sub_category_id'=> $cat_id, 'brand_id'=>$brand_id])->simplePaginate(1);
+            // dd($products->hasMore);
+            return view('components.products_catalog_ajax_fetch', compact('products'));
+        }
+
 
     
     public function update_product_ajax_fetch(Request $request)
@@ -188,7 +211,8 @@ class ProductController extends BaseController
             'prd_name' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:100000'],
             'brand_id' => ['required', 'string', 'max:55'],
-            'price' => ['required', 'string', 'max:55'],
+            'outright_price' => ['required', 'string', 'max:55'],
+            'install_price' => ['required', 'string', 'max:55'], 
             'main_category_id' => ['required', 'string', 'max:55'],
             'sub_category_id' => ['required', 'string', 'max:55']
         ]); 
@@ -196,15 +220,15 @@ class ProductController extends BaseController
             // $product = Product::find($product_id); 
             $product = Product::where('product_id', $product_id)->firstOrFail();
             $previous_image = DB::table('products')->where('product_id', $product_id)->value('img_name');
-            
+            // dd($previous_image);
 
             if ($product) {
 
                 if ($request->hasFile('img_name')) {  
 
-                    $file = $request->file('img_name');  $random_string = Str::random(20); 
-                    $ogImage = Image::make($file);
-                    $originalPath = 'app/public/uploads/products_img/'; 
+                    $file = $request->file('img_name');   $w=400; $h=400;
+                    $ogImage = Image::make($file)->resizeCanvas($this->w, $this->h, 'center', false, 'ffffff');
+                    $originalPath = 'app/public/uploads/products_img/';   $random_string = Str::random(20);
                     $filename = time().'-'. $random_string .'.'. $file->getClientOriginalExtension();
                     $ogImage =  $ogImage->save(storage_path($originalPath.$filename));
 
@@ -213,7 +237,8 @@ class ProductController extends BaseController
                         'prd_name' => $data['prd_name'], 
                         'description' => $data['description'],
                         'brand_id' => $data['brand_id'],
-                        'price' => $data['price'],
+                        'outright_price' => $data['outright_price'],
+                        'install_price' => $data['install_price'], 
                         'main_category_id' => $data['main_category_id'],
                         'sub_category_id' => $data['sub_category_id'],
                         'img_name' => $filename
@@ -225,7 +250,8 @@ class ProductController extends BaseController
                         'prd_name' => $data['prd_name'], 
                         'description' => $data['description'],
                          'brand_id' => $data['brand_id'],
-                         'price' => $data['price'],
+                         'outright_price' => $data['outright_price'],
+                         'install_price' => $data['install_price'], 
                          'main_category_id' => $data['main_category_id'],
                          'sub_category_id' => $data['sub_category_id']
                     ]); 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Hash; 
 use Illuminate\Validation\Rule;
 use App\Models\Client;
 use App\Models\User; 
@@ -94,12 +94,7 @@ class TransactionController extends BaseController
   
 
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   
     public function edit($id)
     {
        //
@@ -140,12 +135,12 @@ class TransactionController extends BaseController
     public function new_purchase_session(Request $request)
     {   
         $client_id = $request['client_id'];  $product_id = $request['product_id']; 
-       
+        
         $sql = DB::select("show table status like 'product_purchase_sessions'");
         $next_id = 100 + $sql[0]->Auto_increment;   
         $pps_id = 'PPS-'.$next_id;   $status = 'pending';
         $agent_id = auth()->user()->user_id; // dd($agent_id);
-
+        
         $user = Product_purchase_session::create ([
             'pps_id' => $pps_id,
             'product_id' => $product_id,

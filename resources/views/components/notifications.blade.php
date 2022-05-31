@@ -16,12 +16,15 @@
       </section>
     
     
-    @php
-        $notification_icon_array = array( 
-        'new_purchase_reg' => 'fas fa-shopping-cart',
-        'purchase_session_approved' => 'fas fa-legal',
-        );
-    @endphp
+      @php
+          $notification_icon_array = array( 
+          'new_purchase_reg' => 'fas fa-shopping-cart',
+          'purchase_session_approved' => 'fas fa-legal',
+          'new_client_web_reg' => 'ion ion-person-add',
+          'new_client_agt_reg' => 'ion ion-person-add',
+          );
+      @endphp
+    
     
       <!-- Main content -->
       <section class=""> 

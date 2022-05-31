@@ -82,11 +82,13 @@
             </div>
             <!-- /.col -->
             <div class="col-md-9">
-              <div class="card">
+              <div class="card" id="details_card">
                 <div class="card-header p-2">
                   <ul class="nav nav-pills">
-                    <li class="nav-item"><a class="nav-link active" href="#transactions" data-toggle="tab"> Transactions</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#purchase_sess" data-toggle="tab"> Purchase Sessions </a></li>
+
+                    <li class="nav-item"><a class="nav-link active" href="#purchase_sess" data-toggle="tab"> Purchase Sessions </a></li>
+                    <li class="nav-item"><a class="nav-link" href="#transactions" data-toggle="tab"> Transactions</a></li>
+
                     @admin
                     <li class="nav-item"><a class="nav-link" href="#deliveries" data-toggle="tab">Deliveries</a></li>
                     <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Manage</a></li> 
@@ -95,7 +97,70 @@
                 </div><!-- /.card-header -->
                 <div class="card-body">
                   <div class="tab-content">
-                    <div class="active tab-pane table-responsive" id="transactions"> 
+                   
+                    <div class="active tab-pane table-responsive" id="purchase_sess"> 
+                      <table id="t1" class="table table-bordered table-striped" style="">
+                        <thead>
+                        <tr>
+                          <th>Session ID</th>
+                          <th>Status</th>
+                          <th>Product</th>
+                          <th>Purchase Type</th>
+                          <th>Price</th>
+                          <th>Balance</th> 
+                          <th>%</th> 
+                          <th>Date</th>  <th></th> @admin <th></th> @endadmin
+                        </tr>
+                        </thead>
+                       <tbody>
+                              {{-- loop out clients here --}}
+                                 
+                          @foreach($product_purchase_sessions as $product_purchase_session)
+                          @if (count($product_purchase_session->transaction)>0) 
+                              @php
+                                $percentage_bal =  round(($product_purchase_session->transaction->last()->new_bal/$product_purchase_session->product->install_price)*100, 1)
+                              @endphp
+                          @else
+                              @php $percentage_bal=0; @endphp
+                          @endif
+                          <tr>
+                            <td> {{$product_purchase_session->pps_id}} </td>
+                            <td> {{$product_purchase_session->status}} </td>
+                            <td> {{$product_purchase_session->product->prd_name}} </td>
+                            <td> {{ucfirst(str_replace('_',' ',$product_purchase_session->purchase_type))}} </td>
+                            <td> {{$product_purchase_session->product->install_price}} </td>
+                          
+                            <td>  
+                                @if ($product_purchase_session->transaction->last())
+                                {{ $product_purchase_session->transaction->last()->new_bal }}
+                                @else
+                                  NULL
+                                @endif 
+                            </td>
+                            <td> {{$percentage_bal}}% </td>  
+                            <td> {{$product_purchase_session->created_at}} </td>  
+                            <td> <a href="JavaScript:void(0)" onclick="select_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs">product details</a> </td>  
+                            @admin  <td> <a href="JavaScript:void(0)" onclick="delete_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-danger btn-xs">Delete Session</a> </td> @endadmin 
+                          </tr>  
+                          @endforeach
+                        </tbody> 
+                      </table>
+
+          
+
+                      @php
+                        if (count($product_purchase_sessions)==0) {  
+                          echo '<p class="mt-2 text-center">No purchase sessions found yet!</p> <hr>';
+                        }  
+                      @endphp  
+                    
+
+                      </div>
+                    <!-- /.tab-pane -->
+
+
+
+                    <div class="tab-pane table-responsive" id="transactions"> 
                       <table id="t1" class="table table-bordered" style="width:900px;">
                         <thead>
                         <tr>
@@ -116,7 +181,7 @@
                           @php $last_trans_id = $product_purchase_session->transaction->last()->trans_id @endphp
                             <tr> 
                               <td colspan="8">Transactions on session: <b>{{$product_purchase_session->pps_id}} </b> </td>
-                              <td colspan="3"> <a href="#" onclick="select_trans_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs btn-block">Session Details</a> </td> 
+                              <td colspan="3"> <a href="JavaScript:void(0)" onclick="select_trans_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs btn-block">Session Details</a> </td> 
                             </tr> 
                             @foreach($product_purchase_session->transaction->sortKeysDesc() as $transaction)
                             @php $allow_edit = false;  $tr_bg_class = '';
@@ -135,11 +200,11 @@
                                    <td colspan="2"></td>
                                 @else
                                     <td>  @if ($allow_edit===true) 
-                                      <a href="#" onclick="trans_edit_modal('{{$transaction->trans_id}}')" class="btn btn-primary btn-xs btn-block"> <span class="fas fa-edit"></span> Update</a>  
+                                      <a href="JavaScript:void(0)" onclick="trans_edit_modal('{{$transaction->trans_id}}')" class="btn btn-primary btn-xs btn-block"> <span class="fas fa-edit"></span> Update</a>  
                                     @endif
                                   </td>
                                   <td>  @if ($allow_edit===true) 
-                                      <a href="#" onclick="trans_delete_modal('{{$transaction->trans_id}}')" class="btn btn-danger btn-xs btn-block"> <span class="fas fa-trash"></span> Delete</a> 
+                                      <a href="JavaScript:void(0)" onclick="trans_delete_modal('{{$transaction->trans_id}}')" class="btn btn-danger btn-xs btn-block"> <span class="fas fa-trash"></span> Delete</a> 
                                       @endif
                                   </td>
                                 @endif  
@@ -159,62 +224,8 @@
                       }
                     @endphp 
                     </div>
-                    <div class="tab-pane table-responsive" id="purchase_sess"> 
-                      <table id="t1" class="table table-bordered table-striped" style="">
-                        <thead>
-                        <tr>
-                          <th>Session ID</th>
-                          <th>Status</th>
-                          <th>Product</th>
-                          <th>Price</th>
-                          <th>Balance</th> 
-                          <th>%</th> 
-                          <th>Date</th>  <th></th> @admin <th></th> @endadmin
-                        </tr>
-                        </thead>
-                       <tbody>
-                              {{-- loop out clients here --}}
-                                 
-                          @foreach($product_purchase_sessions as $product_purchase_session)
-                          @if (count($product_purchase_session->transaction)>0) 
-                              @php
-                                $percentage_bal =  round(($product_purchase_session->transaction->last()->new_bal/$product_purchase_session->product->price)*100, 1)
-                              @endphp
-                          @else
-                              @php $percentage_bal=0; @endphp
-                          @endif
-                          <tr>
-                            <td> {{$product_purchase_session->pps_id}} </td>
-                            <td> {{$product_purchase_session->status}} </td>
-                            <td> {{$product_purchase_session->product->prd_name}} </td>
-                            <td> {{$product_purchase_session->product->price}} </td>
-                            <td>  
-                                @if ($product_purchase_session->transaction->last())
-                                {{ $product_purchase_session->transaction->last()->new_bal }}
-                                @else
-                                  NULL
-                                @endif 
-                            </td>
-                            <td> {{$percentage_bal}}% </td>  
-                            <td> {{$product_purchase_session->created_at}} </td>  
-                            <td> <a href="#" onclick="select_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-primary btn-xs">product details</a> </td>  
-                            @admin  <td> <a href="#" onclick="delete_pps_modal('{{$product_purchase_session->pps_id}}')" class="btn btn-danger btn-xs">Delete Session</a> </td> @endadmin 
-                          </tr>  
-                          @endforeach
-                        </tbody> 
-                      </table>
 
 
-
-                      @php
-                        if (count($product_purchase_sessions)==0) {  
-                          echo '<p class="mt-2 text-center">No purchase sessions found yet!</p> <hr>';
-                        }  
-                      @endphp  
-                    
-
-                      </div>
-                    <!-- /.tab-pane -->
                     @admin
                       <div class="tab-pane" id="deliveries"> 
                       </div> 
@@ -232,8 +243,28 @@
                   </div>
                   <!-- /.tab-content -->
                 </div><!-- /.card-body -->
+
+              
               </div>
               <!-- /.card -->
+
+
+               @client
+                <div class="mt-3 card">
+                  <div class="card-header p-2"> 
+                    <p class="mb-0 ml-2"><b>Bank Details</b></p>
+                  </div> 
+                  <div class="card-body p-3">
+                    <p>You can make your directly payments into the company Bank Account;</p>
+                      <ul>
+                        <li>Account: <b>4110108639</b></li>
+                        <li>Account Name: <b>ADROITLINK-UP INT'L</b></li>
+                        <li>Bank: <b>Providus Bank</b> <i>previously Skye Bank</i> </li>
+                      </ul>
+
+                  </div>
+                </div>
+               @endclient
             </div>
             <!-- /.col -->
           </div>

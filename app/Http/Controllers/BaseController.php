@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;   
 use Illuminate\Support\Facades\Auth; 
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use App\Models\Active_state;    
 use App\Models\User; 
 use App\Models\Vendor;
@@ -16,7 +19,7 @@ use App\Models\Activity;
 use App\Models\Notification;   
 use App\Models\Message;   
 use App\Models\Vendor_price;        
-  
+
 
 
 class BaseController extends Controller
@@ -56,6 +59,8 @@ class BaseController extends Controller
 
     public function index()
     {
+
+
         $dash_data = array();      $curr_user = auth()->user();  // get user data
         if ($curr_user->usr_type=='usr_admin')       { $view= 'admin.dashboard'; 
             $no_clients = Client::count();    $no_vendors = Vendor::count();
@@ -95,14 +100,32 @@ class BaseController extends Controller
     public function resolve_notification($notification_id)
     {
         $notification = Notification::findOrFail($notification_id);
-        if ($notification->type=='new_purchase_reg') {
+        if ($notification->type=='new_client_web_reg') {
             $client_id = $notification->main_foreign_key; 
 
             $affected1 = DB::table('notifications')
             ->where('id', $notification_id)
             ->update([ 'status' => 'seen' ]); 
 
-            return redirect()->route('client.show', ['client'=>$client_id])->with('success', 'switch to the <i>purchase sessions tab<\/i> to see new product purchases for this client');
+            return redirect()->route('client.show', ['client'=>$client_id])->with('success', 'switch to the <i>purchase sessions tab</i> to see new product purchases for this client');
+        } 
+        else if ($notification->type=='new_client_agt_reg') {
+            $client_id = $notification->main_foreign_key; 
+
+            $affected1 = DB::table('notifications')
+            ->where('id', $notification_id)
+            ->update([ 'status' => 'seen' ]); 
+
+            return redirect()->route('client.show', ['client'=>$client_id])->with('success', 'switch to the <i>purchase sessions tab</i> to see new product purchases for this client');
+        } 
+        else if ($notification->type=='new_purchase_reg') {
+            $client_id = $notification->main_foreign_key; 
+
+            $affected1 = DB::table('notifications')
+            ->where('id', $notification_id)
+            ->update([ 'status' => 'seen' ]); 
+
+            return redirect()->route('client.show', ['client'=>$client_id])->with('success', 'switch to the <i>purchase sessions tab</i> to see new product purchases for this client');
         } elseif ($notification->type=='purchase_session_approved') {
             $client_id = $notification->main_foreign_key; 
 
@@ -110,7 +133,7 @@ class BaseController extends Controller
             ->where('id', $notification_id)
             ->update([ 'status' => 'seen' ]); 
 
-            return redirect()->route('client.show', ['client'=>$client_id])->with('success', 'switch to the <i>purchase sessions tab<\/i> to see new product purchases for this client');
+            return redirect()->route('client.show', ['client'=>$client_id])->with('success', 'switch to the <i>purchase sessions tab<i> to see new product purchases for this client');
         }
     } 
 
@@ -154,19 +177,55 @@ class BaseController extends Controller
     
     
     
-    public function post_chat (Request $request)
+    public function post_msg (Request $request)
     { // dd($request);   
       $receiver_id = $request['patner_id'];         $message = $request['message'];
-      $sender_id = auth()->user()->user_id;       $status  = 'sent';
+      $sender_id = auth()->user()->user_id;       $status  = 'sent';   $msg_type  = 'raw_txt';
       $channel = auth()->user()->user_id.'_'.$receiver_id;   $timestamp = time();
       $response = ['status'=>'failed'];
+
+      $message1 = Message::create ([
+        'sender_id' => $sender_id,
+        'receiver_id' => $receiver_id,
+        'channel' => $channel,
+        'msg_type' => $msg_type,
+        'message' => $message,
+        'status' => $status, 
+        'timestamp' => $timestamp 
+     ]);   $response = ['status'=>'sent'];
+
+     return response()->json($response); 
+    } 
+
+
+
+
+    public function post_file (Request $request)
+    { // dd($request);   
+
+        $data = request()->validate([
+            'file_msg' => ['required', 'image']
+        ]); 
+
+      $receiver_id = $request['patner_id'];    
+      $sender_id = auth()->user()->user_id;       $status  = 'sent';   $msg_type  = 'file_img';
+      $channel = auth()->user()->user_id.'_'.$receiver_id;   $timestamp = time();
+      $response = ['status'=>'failed'];
+
+      $file = $request->file('file_msg');   
+      $ogImage = Image::make($file);
+      $originalPath = 'app/public/uploads/chats_file/';  $random_string = Str::random(20);
+      $filename = time().'-'. $random_string .'.'. $file->getClientOriginalExtension();
+      $ogImage =  $ogImage->save(storage_path($originalPath.$filename));
+
 
       $message = Message::create ([
         'sender_id' => $sender_id,
         'receiver_id' => $receiver_id,
         'channel' => $channel,
-        'message' => $message,
-        'status' => $status, 
+        'msg_type' => $msg_type,
+        'message' => $filename,
+        'status' => $status,
         'timestamp' => $timestamp 
      ]);   $response = ['status'=>'sent'];
 
@@ -191,10 +250,12 @@ class BaseController extends Controller
                   if ($message['status']=='sent') {  $eye = '<i class="ion-android-done"><\/i >';  } 
                                               else {  $eye = '<i class="ion-android-done-all"><\/i >';  } 
                 
+                  if ($message['msg_type']=='raw_txt')  { $msg =  $message['message']; } else { $msg =  '<img class="img img-fluid" src="'. asset('storage/uploads/chats_file/'.$message['message']) .'"/>'; }
+                                              
                   if (auth()->user()->user_id==$message['sender_id'])    {
-                  $chatboard_msg .= '<p class="comp mb-1">'.$message['message'].'<span class="tmcomp"> <b style="font-size:12px">'.$eye.' you:<\/b> <br>'.$message['created_at'].'<\/span > <\/p >';  
+                  $chatboard_msg .= '<p class="comp mb-1">'.$msg.'<span class="tmcomp"> <b style="font-size:12px">'.$eye.' you:<\/b> <br>'.$message['created_at'].'<\/span > <\/p >';  
                   } else {
-                  $chatboard_msg .= '<p class="cust mb-1">'.$message['message'].'<span class="tmcus"> <b style="font-size:12px"><span class="ion-ios-contact-outline"><\/span > '.$message->sender->username.'<\/b ><br >'.$message['created_at'].'<\/span> <\/p >';
+                  $chatboard_msg .= '<p class="cust mb-1">'.$msg.'<span class="tmcus"> <b style="font-size:12px"><span class="ion-ios-contact-outline"><\/span > '.$message->sender->username.'<\/b ><br >'.$message['created_at'].'<\/span> <\/p >';
                 
                   DB::table('messages')->where('id', $message['id'])->update(['status' => 'seen']);  
                       }
@@ -219,7 +280,7 @@ class BaseController extends Controller
     
 
         $topnav_msg = '
-        <a class="nav-link" data-toggle="dropdown" href="#">
+        <a class="nav-link" data-toggle="dropdown" href="JavaScript:void(0)">
           <i class="far fa-comments"><\/i>';
 
           if (count($chat_patners)>0) {
@@ -246,9 +307,12 @@ class BaseController extends Controller
                     <div class="media-body">
                       <h3 class="dropdown-item-title">'.$user[0]->username.'<\/h3>';
 
+                      if ($user[1]->msg_type=='raw_txt')  { $msg2 = substr($user[1]->message,0,30);  } 
+                      else { $msg2 =  '<span class="fa fa-image" style="font-size: 20px;"></span>'; }
+
                         if ($user[1]) {
                         $topnav_msg .= '
-                        <p class="text-sm short_msg">'.substr($user[1]->message,0,30).' ...<\/p>
+                        <p class="text-sm short_msg">'.$msg2.' ...<\/p>
                         <p class="text-sm text-muted mb-0"><i class="far fa-clock mr-1"><\/i>'.$user[1]->created_at.'<\/p>';
                         } else { $topnav_msg .= '<p class="text-sm short_msg">---<\/p>'; }
 
@@ -264,10 +328,8 @@ class BaseController extends Controller
           <a href="'.route('chat_board', ['chat_patner'=>[]]).'" class="dropdown-item dropdown-footer">See All Messages<\/a>
         <\/div>';
 
-      // dd($topnav_msg);
-
-
-
+   
+ 
           return response()->json(['chatboard_msg'=>$chatboard_msg, 'topnav_msg'=>$topnav_msg, 'active_time'=>$active_time]);
         // return view('chat_box_ajax_fetch', compact('messages'));
     }

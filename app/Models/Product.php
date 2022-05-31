@@ -27,6 +27,7 @@ class Product extends Model
         return $this->hasMany('App\Models\Vendor_price', 'product_id', 'product_id')->orderBy('price', 'desc');
     } 
 
+
     public function product_purchase_session() {
         return $this->hasMany('App\Models\Product_purchase_session', 'product_id', 'product_id');
     } 

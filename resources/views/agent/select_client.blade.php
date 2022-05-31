@@ -21,7 +21,7 @@
                          <table class="table w-100">
                              <tr><td>Product ID</td>  <td><b>{{$product->product_id}}</b></td></tr>
                              <tr><td>Name</td>        <td><b>{{$product->prd_name}}</b></td></tr>
-                             <tr><td>Price</td>       <td><b>{{$product->price}}</b></td></tr>
+                             <tr><td>Price</td>       <td><b>{{$product->install_price}}</b></td></tr>
                              <tr><td>Description</td> <td><b>{{$product->description}}</b></td></tr>
                          </table>
                     </div>   
@@ -62,7 +62,7 @@
                   <td> {{$client->address}} </td>
                   <td> {{$client->agent->catchment->catchment_id}} </td>
                   {{-- <td> {{$client->catchment->lga}} </td> --}}
-                  <td> <a class="btn btn-primary btn-xs btn-block" href="#" onclick="show_profile('{{$client->client_id}}', '{{$product->product_id}}')"> <span class="fa fa-user"></span> Profile</a> </td>
+                  <td> <a class="btn btn-primary btn-xs btn-block" href="JavaScript:void(0)" onclick="show_profile('{{$client->client_id}}', '{{$product->product_id}}')"> <span class="fa fa-user"></span> Profile</a> </td>
                  </tr>
                 @endforeach
                   </tbody>
