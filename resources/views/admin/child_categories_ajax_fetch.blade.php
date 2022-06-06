@@ -74,9 +74,9 @@
 
 @if ($element=='select')
      <option value=""></option>
-    @if (count($sub_categories)>0) 
-      @foreach ($sub_categories as $sub_category)
-        <option value="{{$sub_category->id}}">{{$sub_category->cat_name}}</option>
+    @if (count($child_categories)>0) 
+      @foreach ($child_categories as $child_category)
+        <option value="{{$sub_category->id}}">{{$child_category->cat_name}}</option>
       @endforeach
     @else 
        <option value="">: NONE :</option>

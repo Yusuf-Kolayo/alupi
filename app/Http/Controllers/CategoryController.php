@@ -40,6 +40,16 @@ class CategoryController extends BaseController
     }
 
 
+    
+    public function child_cat_ajax_fetch(Request $request)
+    {  
+        $sub_cat_id = $request['sub_cat_id'];    $element = $request['element'];   // dd($request['cat_id']); 
+        $main_cat_name = DB::table('categories')->where('id', $sub_cat_id)->value('cat_name');
+        $child_categories = Category::where('parent_id', $sub_cat_id)->get();
+        return view('admin.child_categories_ajax_fetch', compact('child_categories','main_cat_name', 'element')); 
+    }
+
+
    
     
     public function create()
@@ -56,9 +66,9 @@ class CategoryController extends BaseController
             'cat_name' => ['required', 'string', 'max:100', 'unique:categories'],
             'abbr' => ['required', 'string', 'max:3', 'unique:categories'],
             'description' => ['required', 'string', 'max:1000'],
-            'meta_title' => ['required', 'string', 'max:100'],  
-            'meta_desc' => ['required', 'string', 'max:1000'],  
-            'meta_keyword' => ['required', 'string', 'max:100'], 
+            'meta_title' => ['nullable', 'string', 'max:100'],  
+            'meta_desc' => ['nullable', 'string', 'max:1000'],  
+            'meta_keyword' => ['nullable', 'string', 'max:100'], 
             'parent_id' => ['required', 'string', 'max:55'],     
             'position' => ['required', 'string', 'max:55']
         ]); 

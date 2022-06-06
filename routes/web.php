@@ -156,6 +156,7 @@ Route::group (['prefix' => 'admin_agent', 'middleware' => ['auth', 'is_admin_age
     Route::resource('transaction', TransactionController::class); 
     
     Route::get('/category/sub_cat_ajax_fetch', [CategoryController::class, 'sub_cat_ajax_fetch'])->name('category.sub_cat_ajax_fetch');
+    Route::get('/category/child_cat_ajax_fetch', [CategoryController::class, 'child_cat_ajax_fetch'])->name('category.child_cat_ajax_fetch');
     Route::get('/category/edit_category_ajax_fetch', [CategoryController::class, 'edit_category_ajax_fetch'])->name('category.edit_category_ajax_fetch');
     Route::get('/category/delete_category_ajax_fetch', [CategoryController::class, 'delete_category_ajax_fetch'])->name('category.delete_category_ajax_fetch');
     Route::resource('category', CategoryController::class);

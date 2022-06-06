@@ -96,7 +96,17 @@
                 <div class="col-md-6">
                     <div class="form-group">
                       <label> Sub Category </label>
-                      <select name="sub_category_id" class="form-control" id="sub_category_id">
+                      <select name="sub_category_id" class="form-control" id="sub_category_id" onchange="fetch_child_cat();" >
+                        <option value=""></option>  
+                    </select> 
+                    </div>
+                </div> 
+
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label> Child Category </label>
+                      <select name="child_category_id" class="form-control" id="child_category_id">
                         <option value=""></option>  
                     </select> 
                     </div>
@@ -237,8 +247,10 @@
 
    @include('components.product_ext')
 
-@php } @endphp
-
+@php } else { @endphp
+    
+     <p class="h6 mt-5 text-center">No items found under this category</p>
+  @php }  @endphp
  
     @section('page_scripts')
            <script>
