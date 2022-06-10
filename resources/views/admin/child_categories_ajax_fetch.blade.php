@@ -76,7 +76,7 @@
      <option value=""></option>
     @if (count($child_categories)>0) 
       @foreach ($child_categories as $child_category)
-        <option value="{{$sub_category->id}}">{{$child_category->cat_name}}</option>
+        <option value="{{$child_category->id}}">{{$child_category->cat_name}}</option>
       @endforeach
     @else 
        <option value="">: NONE :</option>
