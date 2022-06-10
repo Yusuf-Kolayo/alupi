@@ -111,7 +111,7 @@ class ProductController extends BaseController
         $brands = Brand::all();
         $main_categories = Category::where('parent_id', 0)->get();  
         $sub_category = Category::where('id', $sub_category_id)->firstOrFail();  
-        $products = Product::where('sub_category_id', $sub_category_id)->simplePaginate(12);
+        $products = Product::where('sub_category_id', $sub_category_id)->simplePaginate(12);  //dd($products);
  
         return view('admin.products_catalog', 
           compact('products','main_categories','brands','sub_category_id','sub_category'));

@@ -119,6 +119,7 @@ div>h6>a { text-transform: capitalize; } .preloader1 { width: 10%; }
       'new_purchase_reg' => 'fas fa-shopping-cart',
       'purchase_session_approved' => 'fas fa-legal',
         'new_client_web_reg' => 'ion ion-person-add',
+           'new_client_reg' => 'ion ion-person-add',
         'new_client_agt_reg' => 'ion ion-person-add',
     );
   @endphp

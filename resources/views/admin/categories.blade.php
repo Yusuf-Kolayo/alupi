@@ -75,7 +75,7 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label>  Meta Tag Title </label>
-                                                    <input type="text" class="form-control" required name="meta_title"/> 
+                                                    <input type="text" class="form-control"  name="meta_title" /> 
                                                 </div>
                                             </div>
               
@@ -90,21 +90,25 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label>  Meta Tag Keywords </label>
-                                                    <input type="text" class="form-control" required name="meta_keyword"/> 
+                                                    <input type="text" class="form-control"  name="meta_keyword"/> 
                                                 </div>
                                             </div>
               
                                   
-                                            <div class="col-md-12">
-                                                <div class="modal-footer" style="border-top: 0px;"> 
-                                                    <input type="submit" class="btn btn-primary" value="Submit" name="submit"/>
-                                                </div>
-                                            </div>
+                                           
                                     </div>
               
                                 
                                   </div> 
                             </div>
+
+                           <div class="row">
+                           <div class="col-12">
+                                                <div class="modal-footer" style="border-top: 0px;"> 
+                                                    <input type="submit" class="btn btn-primary" value="Submit" name="submit"/>
+                                                </div>
+                           </div>
+                           </div>
                       </div> 
                 {!! Form::close() !!}
 

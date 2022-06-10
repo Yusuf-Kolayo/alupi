@@ -145,13 +145,14 @@
 
 
 
-
+      
 
 
 
       // FETCH SUB-CATEGORY INTO SELECT FIELD ON ADD PRODUCT FORM
       function fetch_sub_cat() {
           var main_cat_id = $('#main_category_id').val();
+          $('#sub_category_id').html("");  // clear previous options first
           var data2send={'main_cat_id':main_cat_id, 'element':'select'};  
           $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
           $.ajax({
@@ -161,6 +162,25 @@
               data:data2send,
               success:function(resp){
                   $('#sub_category_id').html(resp);
+              }
+        }); 
+      }
+
+
+
+            // FETCH CHILD-CATEGORY INTO SELECT FIELD ON ADD PRODUCT FORM
+            function fetch_child_cat() {
+          var sub_cat_id = $('#sub_category_id').val();
+          $('#child_category_id').html("");  // clear previous options first
+          var data2send={'sub_cat_id':sub_cat_id, 'element':'select'};  
+          $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $("meta[name=csrf-token]").attr('content') }  });
+          $.ajax({
+              url:"{{ route('category.child_cat_ajax_fetch') }}",
+              dataType:"text",
+              method:"GET",
+              data:data2send,
+              success:function(resp){
+                  $('#child_category_id').html(resp);
               }
         }); 
       }
